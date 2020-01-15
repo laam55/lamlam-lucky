@@ -115,6 +115,7 @@
 			position: absolute;
 			right: 80px;
 			top: 80px;
+			z-index: 1010;
 		}
 		button.button-play-1 span{
 			font-size: 19pt;
@@ -418,6 +419,7 @@
 		var is_screen_number_lucky = true
 		// enter to stop
 		var stop_random_now = false
+		var stop_spin_now = false
 
 		// SCREEN
 		reload_screen()
@@ -496,7 +498,11 @@
 			event.preventDefault()
 			var keycode = (event.keyCode ? event.keyCode : event.which);
 			if(keycode == '13' && is_random){
-				stop_random_now = true
+				if (is_screen_number_lucky) {
+					stop_random_now = true
+				} else {
+					stop_spin_now = true
+				}
 			}
 		});
 		// edn effect game
@@ -611,6 +617,7 @@
 			console.log('end game!')
 			is_random = false
 			stop_random_now = false
+			stop_spin_now = false
 			end_game_effect()
 			update_inner_table()
 		}
@@ -639,7 +646,8 @@
 		function roulette_spin(btn){
 			is_random = true
 		    // set initial force randomly
-		    force = Math.floor(Math.random() * randForce) + minForce;
+		    // force = Math.floor(Math.random() * randForce) + minForce;
+		    force = 888888888888
 		    requestAnimationFrame(doAnimation);
 		}
 
@@ -647,7 +655,12 @@
 		    // new angle is previous angle + force modulo 360 (so that it stays between 0 and 360)
 		    angle = (angle + force) % 360;
 		    // decay force according to inertia parameter
-		    force *= inertia;
+		    force *= inertia
+		    console.log('force', force)
+		    if (stop_spin_now) {
+		    	stop_spin_now = false
+		    	force = force < 12 ? force : 12
+		    }
 		    rouletteElem.style.transform = 'rotate('+angle+'deg)';
 		    // stop animation if force is too low
 		    if (force < 0.05) {
