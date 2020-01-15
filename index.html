@@ -303,11 +303,63 @@
 		  background: #F9BA34;
 		  border-radius: 10px;
 		}
+
+		/* app-modal-container */
+		.app-modal-container {
+			position: absolute;
+			z-index: 9999;
+			width: 36%;
+			height: 20%;
+			top: 50px;
+			left: 32%;
+			background-color: #FFA3C3;
+			border-radius: 20px;
+			padding: 5px;
+			box-shadow: 0px 3px 0px 0px red;
+			display: none;
+		}
+
+		.app-modal-container .app-modal-wrap {
+			border: 2px solid yellow;
+			border-radius: 18px;
+			height: 100%;
+			width: 100%;
+			padding: 10px;
+		}
+
+		.app-modal-container button {
+			width: 40px;
+			height: 30px;
+			border-radius: 10px;
+			background-color: #e44d13;
+		    box-shadow: 0 4px 0px -1px #a9190b;
+			border: none;
+			outline-style: none;
+			position: absolute;
+			right: 20px;
+			bottom: 20px;
+			z-index: 1010;
+		}
+		.app-modal-container button span{
+			font-size: 12pt;
+			color: white;
+			text-shadow: 0px 3px #a9190b;
+		}
+		.app-modal-container button:active{
+			box-shadow: 0px 1px 0px 0px #a9190b;
+			transform: translate(0,4px);
+		}
 	</style>
 </head>
 <body>
 	<canvas id="canvas"></canvas>
 	<div class="background">
+	</div>
+	<div class="app-modal-container">
+		<div class="app-modal-wrap">
+			<div class="app-modal-content"></div>
+			<button class="ok"><span>OK</span></button>
+		</div>
 	</div>
 	<div class="absolute-object longDen1">
 		<img src="long-den-1.png" alt="">
@@ -474,6 +526,29 @@
 			$('#result-table').html(result)
 		}
 		// END SCREEN
+
+		// SHOW MODAL
+		function show_modal(alert) {
+			$('.app-modal-container ').show()
+			$('.app-modal-container .app-modal-content').html(alert)
+		}
+
+		$('.app-modal-container .ok').click(function(e) {
+			hide_modal()
+		})
+
+		function hide_modal(alert) {
+			$('.app-modal-container').hide()
+		}
+		
+		$(document).click(function() {
+		    $('.app-modal-container').hide()
+		});
+
+		$(".app-modal-container").click(function(event) {
+		    event.stopPropagation();
+		});
+		// HIDE MODAL
 
 		// EFFECT GAME
 		function play_game_effect(argument) {
@@ -675,6 +750,7 @@
 		        result = values[Math.floor(((angle / 360) * values.length) - 0.5)];
 		        // scoreElem.innerHTML = result
 		        console.log('result', result)
+		        show_modal(result)
 		        end_game()
 		        return;
 		    }
