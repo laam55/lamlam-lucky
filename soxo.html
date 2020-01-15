@@ -42,6 +42,17 @@
 			font-family:'combinumerals-font';
 			src: url('combinumerals-font/CombinumeralsBold-Zpmm.ttf');
 		}
+		img#inca {
+			width: 36px;
+			height: auto;
+			transform: rotate(180deg);
+			position: absolute;
+			left: 50%;
+			top: 50%;
+			margin-top: -84px;
+			margin-left: -18px;
+			z-index: 1000;
+		}
 		.wrap-game {
 		    position: absolute;
 		    width: 60%;
@@ -98,7 +109,6 @@
 		    box-shadow: 0 8px 0px -1px #a9190b;
 			border: none;
 			outline-style: none;
-
 			position: absolute;
 			right: 80px;
 			top: 80px;
@@ -292,16 +302,19 @@
 		<img src="long-den-3.png" alt="">
 	</div>
 	<div class="wrap-game">
+        <img id="inca" src="inca.png" alt="">
 		<button class="button-play-1 pointer" onclick="switch_screen_game()">
 			<span>
 				1
 			</span>
 		</button>
 		<div>
-		    <div id="wheel-lucky" class="wheel-lucky roulette_wheel">
-		        <div id="chart"></div>
-		        <img class="container-circle" src="wheel-1.png" alt="">
-		    </div>
+			<div id="wrap-wheel-lucky">
+			    <div id="wheel-lucky" class="wheel-lucky roulette_wheel">
+			        <div id="chart"></div>
+			        <img class="container-circle" src="wheel-1.png" alt="">
+			    </div>
+			</div>
 			<span class="rdnCount gold" data-count="120">888888</span>
 		</div>
 		<div>
@@ -403,11 +416,13 @@
 		load_list_result()
 		function reload_screen(argument) {
 			if (is_screen_number_lucky) {
-				$('#wheel-lucky').hide()
+				$('#wrap-wheel-lucky').hide()
+				$('#inca').hide()
 				$('.rdnCount').show()
 				$('.button-play-1 span').html(1)
 			} else {
-				$('#wheel-lucky').show()
+				$('#wrap-wheel-lucky').show()
+				$('#inca').show()
 				$('.rdnCount').hide()
 				$('.button-play-1 span').html(2)
 			}
