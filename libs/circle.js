@@ -21,6 +21,8 @@ var padding = {top: 20, right: 20, bottom: 20, left: 20},
     picked = 100000,
     oldpick = [],
     color = d3.scale.category20();
+
+// list image data
 var data = [
     {"label":"Dell LAPTOP", "value":1, "imageLink":"https://www.pikpng.com/pngl/m/30-306273_pixel-heart-png-download-20-x-20-pixel.png"},
     {"label":"IMAC PRO", "value":1, "imageLink":"https://images-na.ssl-images-amazon.com/images/I/51V8ObWrpKL._AC_SX569_.jpg"}, //font-family
@@ -61,7 +63,8 @@ arcs.append("path").attr("transform", function(d){
     })
     .attr("fill", function(d, i){ return color(i); })
     .attr("d", function (d) { return arc(d); });
-// add the text
+
+// Them text cho Wheel
 arcs.append("text").attr("transform", function(d){
         d.innerRadius = 0;
         d.outerRadius = r;
@@ -72,19 +75,20 @@ arcs.append("text").attr("transform", function(d){
     .text( function(d, i) {
         return data[i].label;
     });
+
+// Them anh cho Wheel
 arcs.append("svg:image")
-.attr("transform", function(d){
-    d.innerRadius = 0;
-    d.outerRadius = r;
-    d.angle = (d.startAngle + d.endAngle)/2;
-    return "rotate(" + (d.angle * 180 / Math.PI - 90 + init_rotate) + ")translate(" + (d.outerRadius - 30) +")";
-})
-.attr('x', -init_rotate)
-.attr('y', -init_rotate)
-.attr('width', 80)
-.attr('height', 80)
-.attr("xlink:href", function(d, i){
-    // console.log("xlink:href", d, i)
-    return d.data.imageLink
-})
-// .attr("xlink:href", "https://www.pikpng.com/pngl/m/30-306273_pixel-heart-png-download-20-x-20-pixel.png")
+    .attr("transform", function(d){
+        d.innerRadius = 0;
+        d.outerRadius = r;
+        d.angle = (d.startAngle + d.endAngle)/2;
+        return "rotate(" + (d.angle * 180 / Math.PI - 90 + init_rotate) + ")translate(" + (d.outerRadius - 30) +")";
+    })
+    .attr('x', -init_rotate)
+    .attr('y', -init_rotate)
+    .attr('width', 80)
+    .attr('height', 80)
+    .attr("xlink:href", function(d, i){
+        return d.data.imageLink
+    })
+    // .attr("xlink:href", "https://www.pikpng.com/pngl/m/30-306273_pixel-heart-png-download-20-x-20-pixel.png")

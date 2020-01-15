@@ -4,7 +4,8 @@
 	<title></title>
 	<link rel="stylesheet" href="libs/bootstrap.min.css">
     <link rel="stylesheet" href="libs/circle.css">
-    <link rel="stylesheet" href="libs/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.1/css/font-awesome.min.css">
+    <link rel="stylesheet" href="libs/toastr.min.css">
 	<style>
 		body {
 			font-family: Tahoma,Verdana,sans-serif;
@@ -321,131 +322,86 @@
 	</div> -->
 	<div class="absolute-object bgImage1">
 		<div class="result-div">
-			<table border="0" cellpadding="10" id="result-table" class="result-table">
-				<tbody>
-					<tr>
-						<td width="70%">Pham Tung Lam</td>
-						<td width="30%">212</td>
-					</tr>
-					<tr>
-						<td>Pham Tung Lam</td>
-						<td>212</td>
-					</tr>
-					<tr>
-						<td width="70%">Pham Tung Lam</td>
-						<td width="30%">212</td>
-					</tr>
-					<tr>
-						<td>Pham Tung Lam</td>
-						<td>212</td>
-					</tr>
-					<tr>
-						<td width="70%">Pham Tung Lam</td>
-						<td width="30%">212</td>
-					</tr>
-					<tr>
-						<td>Pham Tung Lam</td>
-						<td>212</td>
-					</tr>
-					<tr>
-						<td width="70%">Pham Tung Lam</td>
-						<td width="30%">212</td>
-					</tr>
-					<tr>
-						<td>Pham Tung Lam</td>
-						<td>212</td>
-					</tr>
-					<tr>
-						<td width="70%">Pham Tung Lam</td>
-						<td width="30%">212</td>
-					</tr>
-					<tr>
-						<td>Pham Tung Lam</td>
-						<td>212</td>
-					</tr>
-					<tr>
-						<td width="70%">Pham Tung Lam</td>
-						<td width="30%">212</td>
-					</tr>
-					<tr>
-						<td>Pham Tung Lam</td>
-						<td>212</td>
-					</tr>
-					<tr>
-						<td width="70%">Pham Tung Lam</td>
-						<td width="30%">212</td>
-					</tr>
-					<tr>
-						<td>Pham Tung Lam</td>
-						<td>212</td>
-					</tr>
-					<tr>
-						<td width="70%">Pham Tung Lam</td>
-						<td width="30%">212</td>
-					</tr>
-					<tr>
-						<td>Pham Tung Lam</td>
-						<td>212</td>
-					</tr>
-				</tbody>
+			<table border="0" cellpadding="5" id="result-table" class="result-table">
+				<!-- <tr>
+					<td width="10%" class="">1</td>
+					<td width="70%">Pham Tung Lam</td>
+					<td width="30%">00:00:00 12/01/2020</td>
+				</tr> -->
 			</table>
 		</div>
 	</div>
-	<!-- <div class="follow-mouse-right follow-mouse-top absolute-object bgImage2">
-		<img src="nguoi-1.png" alt="">
-	</div> -->
 	<div class="follow-mouse-left follow-mouse-bottom absolute-object bgImage3">
 		<img src="mua-lan.png" alt="">
 	</div>
 	<div class="follow-mouse-right follow-mouse-bottom absolute-object bgImage4">
-		<!-- <img src="bg-image-4.png" alt=""> -->
 		<img class="flip-horizontal" src="bg-image-4-1.png" alt="">
 	</div>
 	<script src="libs/jquery.min.js"></script>
     <script src="libs/d3.v3.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="libs/toastr.min.js"></script>
     <script src="libs/circle.js" charset="utf-8"></script>
 	<script>
-		var configApp = localStorage.getItem('configApp') || null
-		var element_table = document.getElementById('result-table')
-		var list_result = [{
-			start: 1000,
-			end: 99999
-		}]
-		var list_user = [{
-			"1": "Nguyen van A"
-		}]
-		var play_life = 5;
+		toastr.options = {
+		  "closeButton": false,
+		  "debug": false,
+		  "newestOnTop": false,
+		  "progressBar": false,
+		  "positionClass": "toast-top-right",
+		  "preventDuplicates": false,
+		  "onclick": null,
+		  "showDuration": "300",
+		  "hideDuration": "1000",
+		  "timeOut": "5000",
+		  "extendedTimeOut": "1000",
+		  "showEasing": "swing",
+		  "hideEasing": "linear",
+		  "showMethod": "fadeIn",
+		  "hideMethod": "fadeOut"
+		}
+
+		// list number
+		var listResultNumber = localStorage.getItem('listResultNumber')
+		if (listResultNumber) {
+			listResultNumber = JSON.parse(listResultNumber)
+		} else {
+			listResultNumber = []
+		}
+		var listResult = localStorage.getItem('listResult')
+		if (listResult) {
+			listResult = JSON.parse(listResult)
+		} else {
+			listResult = []
+		}
+
+		var appConfig = localStorage.getItem('appConfig')
+		if (appConfig) {
+			appConfig = JSON.parse(appConfig)
+		} else {
+			appConfig = {
+				numberLife: 0,
+				listConfig: [],
+				listConfigUser: {
+					"1": "Pham Tung Lam",
+					"2": "Pham Tung Lam 2",
+					"3": "Pham Tung Lam 3",
+					"4": "Pham Tung Lam 4",
+					"5": "Pham Tung Lam 5 ",
+					"6": "Pham Tung Lamm 6",
+				}
+			}
+		}
+		var appConfigLuckyPage = localStorage.getItem('appConfigLuckyPage') || null
 		var current_life = 0;
 		var is_random = false;
 		var is_screen_number_lucky = true
-		var random_range = [
-			{
-				start: 1,
-				end: 99,
-			},
-			{
-				start: 10,
-				end: 999,
-			},
-			{
-				start: 100,
-				end: 9999,
-			},
-			{
-				start: 1000,
-				end: 99999,
-			},
-			{
-				start: 10000,
-				end: 999999,
-			},
-		];
-		var result = []
+		// enter to stop
+		var stop_random_now = false
 
+		// SCREEN
 		reload_screen()
-
+		load_list_result()
 		function reload_screen(argument) {
-			// body...
 			if (is_screen_number_lucky) {
 				$('#wheel-lucky').hide()
 				$('.rdnCount').show()
@@ -464,6 +420,20 @@
 			}
 		}
 
+		function load_list_result(argument) {
+			result = ''
+			listResult.forEach((item, index) => {
+				result += `<tr>
+					<td width="10%" class="">${index + 1}</td>
+					<td width="70%">${item.name}</td>
+					<td width="30%">${item.time}</td>
+				</tr>`
+			})
+			$('#result-table').html(result)
+		}
+		// END SCREEN
+
+		// EFFECT GAME
 		function play_game_effect(argument) {
 			$('#canvas').hide()
 			$('.rdnCount').removeClass('scale-effect')
@@ -471,55 +441,159 @@
 		}
 
 		function end_game_effect(argument) {
-			// body...
 			$('.rdnCount').addClass('scale-effect')
 			$('#canvas').show()
 			$('.button-play-1').removeClass('not-allowed')
-			setTimeout(() => {
-				$('#canvas').hide()
-				$('.rdnCount').removeClass('scale-effect')
-			}, 5000)
+			// setTimeout(() => {
+			// 	$('#canvas').hide()
+			// 	$('.rdnCount').removeClass('scale-effect')
+			// }, 5000)
 		}
+		// effect dynamic image corner
+		$(document).on("mousemove", function(event){
+			var $mouseX = event.pageX,
+				$mouseY = event.pageY;
+			$('.follow-mouse-bottom').css("bottom", 30 - ($mouseY * 0.05) + 'px');
+			$('.follow-mouse-right').css("right", 30 -($mouseX * 0.05) + 'px');
+
+			$('.follow-mouse-left').css("left", 30 - ($mouseY * 0.05) + 'px');
+			$('.follow-mouse-top').css("top", 30 -($mouseX * 0.05) + 'px');
+		});
+		$(document).keypress(function(event){
+			event.preventDefault()
+			var keycode = (event.keyCode ? event.keyCode : event.which);
+			if(keycode == '13' && is_random){
+				stop_random_now = true
+			}
+		});
+		// edn effect game
 
 		function generate_random_number(min, max) {
 			return Math.floor(Math.random() * (max - min + 1) + min);
 		}
 
-		function save_local_storage() {
-			let newConfigApp = {
-				list_result: list_result,
-				play_life: play_life,
-				current_life: current_life,
-				random_range: random_range,
-				is_screen_number_lucky: is_screen_number_lucky
-			}
-			console.log('newConfigApp', newConfigApp, JSON.stringify(newConfigApp))
-			localStorage.setItem('configApp', JSON.stringify(newConfigApp))
-		}
-
-		// save_local_storage()
-		// get_local_storage()
-
-		function get_local_storage() {
-			// newConfigApp = 
-			console.log(JSON.parse(localStorage.getItem('configApp')))
-			configApp = JSON.parse(localStorage.getItem('configApp'))
-		}
-
+		// table
 		function update_inner_table() {
-			// body...
 			result = ''
-			list_result.forEach(item => {
+			listResult.forEach((item, index) => {
 				result += `<tr>
+					<td width="10%" class="">${index + 1}</td>
 					<td width="70%">${item.name}</td>
-					<td width="30%">${item.number}</td>
+					<td width="30%">${item.time}</td>
 				</tr>`
 			})
-			element_table.innerHTML = result
+			$('#result-table').html(result)
+		}
+
+		// callback event when play game & endgame
+		// get random number srom string 1-200,12,44,321
+		function get_random_number(string) {
+			let random_number
+			if (string) {
+				let list = string.split(',')
+
+				let totalNumber = 0
+				let listAfterConvert = []
+				list.forEach((item, index) => {
+					var data = {}
+					if (item.indexOf('-') >= 0) {
+						start = parseInt(item.substring(0, item.indexOf('-')))
+						end = parseInt(item.substring(item.indexOf('-') + 1))
+
+						data = {
+							start: totalNumber,
+							end: totalNumber + end - start,
+							startNumber: start
+						}
+						totalNumber += end - start + 1
+					} else {
+						data = {
+							start: totalNumber,
+							end: totalNumber,
+							startNumber: parseInt(item)
+						}
+						totalNumber++;
+					}
+					listAfterConvert.push(data)
+				})
+				let random_position = Math.floor(Math.random() * totalNumber);
+
+
+				for (var i = 0; i < listAfterConvert.length; i++) {
+					console.log('if', random_position >= listAfterConvert[i].start && random_position <= listAfterConvert[i].end)
+					if (random_position >= listAfterConvert[i].start && random_position <= listAfterConvert[i].end) {
+						random_number = listAfterConvert[i].startNumber + (random_position - listAfterConvert[i].start)
+						break
+					}
+				}
+				var total_number_while = 0
+				while (listResultNumber.indexOf(random_number) >= 0 && total_number_while < totalNumber) {
+					total_number_while++
+					for (var i = 0; i < listAfterConvert.length; i++) {
+						console.log('if', random_position >= listAfterConvert[i].start && random_position <= listAfterConvert[i].end)
+						if (random_position >= listAfterConvert[i].start && random_position <= listAfterConvert[i].end) {
+							random_number = listAfterConvert[i].startNumber + (random_position - listAfterConvert[i].start)
+							break
+						}
+					}
+				}
+			}
+			
+			return random_number
+		}
+		function play_game() {
+			console.log('start game!')
+			play_game_effect()
+			if (!is_random) {
+				if (is_screen_number_lucky) {
+					console.log('---- random ----')
+					if (appConfig.listConfig && appConfig.listConfig[current_life]) {
+						let random_number = get_random_number(appConfig.listConfig[current_life])
+						rdnCounter($(".rdnCount"), 2000, random_number, 80)
+						current_life++
+					} else if (appConfig.listConfig) {
+						toastr.success("Hết lượt, chuyển sang đang chế độ thử nghiệm, không tính kết quả!")
+						let random_number = generate_random_number(1000, 9999)
+						rdnCounter($(".rdnCount"), 2000, random_number, 80, true)
+					} else {
+						toastr.success("Chưa config lượt chơi, chuyển sang đang chế độ thử nghiệm, không tính kết quả!")
+						let random_number = generate_random_number(1000, 9999)
+						rdnCounter($(".rdnCount"), 2000, random_number, 80, true)
+					}
+				} else {
+					// spinn
+					console.log('---- spinning ----')
+					roulette_spin()
+				}
+			}
+		}
+
+		function end_game($target) {
+			// hieu ung end game
+			console.log('end game!')
+			is_random = false
+			stop_random_now = false
+			end_game_effect()
+			update_inner_table()
+		}
+
+		function writeAndSaveListResult(name, number) {
+			let today = new Date();
+			var date = today.getDate() + '/' + (today.getMonth() + 1) + '/' + today.getFullYear();
+			let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+
+			resultItem = {
+				time: `${time} ${date}`,
+				name: name,
+				gameType: 1,
+			}
+			listResult.push(resultItem)
+			listResultNumber.push(resultItem, number)
+			localStorage.setItem('listResult', JSON.stringify(listResult))
+			localStorage.setItem('listResultNumber', JSON.stringify(listResultNumber))
 		}
 
 		// spinning wheel
-
 		var values = [
 		    1,2,3,4,5,6,7,8
 		].reverse();
@@ -550,9 +624,7 @@
 		}
 
 		// random number
-		// refer: https://stackoverflow.com/questions/8363916/random-number-effect-in-jquery
 		// rdnCounter($(".rdnCount"), 2000);
-
 		// from 0 to N
 		$(".count").each(function() {
 		  $(this)
@@ -570,7 +642,7 @@
 				}
 		    );
 		});
-		function rdnCounter($target, duration, num, speed) {
+		function rdnCounter($target, duration, num, speed, isTest = false) {
 			var $target, started, current, text, len;
 			num = num || $target.data("count");
 			speed = 80;
@@ -579,60 +651,32 @@
 			is_random = true
 
 			animationTimer = setInterval(function() {
-			// If the value is what we want, stop animating
-			// or if the duration has been exceeded, stop animating
-			current = new Date().getTime();
-			if (current - started >= duration) {
-				clearInterval(animationTimer);
-				$target.text(num);
-				end_game($target)
-			} else {
-				// Generate a random string to use for the next animation step
-				text = "";
-				for (var i = 0; i < len; i++) {
-					text += Math.floor(Math.random() * 10);
+				// If the value is what we want, stop animating
+				// or if the duration has been exceeded, stop animating
+				current = new Date().getTime();
+				if (current - started >= duration || stop_random_now) {
+					stop_random_now = false
+					clearInterval(animationTimer);
+					$target.text(num)
+					if (!isTest) {
+						if (appConfig.listConfigUser && appConfig.listConfigUser[num]) {
+							writeAndSaveListResult(appConfig.listConfigUser[num], num)
+						} else {
+							toastr.warning("Không có người này!")
+						}
+					}
+					// update result
+					end_game($target)
+				} else {
+					// Generate a random string to use for the next animation step
+					text = "";
+					for (var i = 0; i < 4; i++) {
+						text += Math.floor(Math.random() * 10);
+					}
+					$target.text(text);
 				}
-				$target.text(text);
-			}
 			}, speed);
 		}
-
-		function play_game(argument) {
-			console.log('start game!')
-			play_game_effect()
-			if (!is_random) {
-				if (is_screen_number_lucky) {
-					console.log('---- random ----')
-					current_range_start = random_range[current_life].start
-					current_range_end = random_range[current_life].end
-					// body...
-					let random_number = generate_random_number(current_range_start, current_range_end)
-					rdnCounter($(".rdnCount"), 2000, random_number, 80)
-					current_life++
-				} else {
-					// spinn
-					console.log('---- spinning ----')
-					roulette_spin()
-				}
-			}
-		}
-
-		function end_game($target) {
-			// hieu ung end game
-			console.log('end game!')
-			is_random = false
-			end_game_effect()
-		}
-
-		$(document).on("mousemove", function(event){
-			var $mouseX = event.pageX,
-			  $mouseY = event.pageY;
-			$('.follow-mouse-bottom').css("bottom", 30 - ($mouseY * 0.05) + 'px');
-			$('.follow-mouse-right').css("right", 30 -($mouseX * 0.05) + 'px');
-
-			$('.follow-mouse-left').css("left", 30 - ($mouseY * 0.05) + 'px');
-			$('.follow-mouse-top').css("top", 30 -($mouseX * 0.05) + 'px');
-		});
 
 		// firework
 		$(function() {
