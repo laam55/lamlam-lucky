@@ -269,8 +269,10 @@
 		})
 
 		$('#clear-local-result').click(function() {
-			appConfig.listResult = []
-			localStorage.setItem('appConfig', JSON.stringify(appConfig))
+			localStorage.setItem('listResult', JSON.stringify([]))
+			localStorage.setItem('listResultNumber', JSON.stringify([]))
+			listUser = []
+			load_list_result()
 		})
 
 		// save

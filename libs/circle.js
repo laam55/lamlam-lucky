@@ -25,11 +25,11 @@ var padding = {top: 20, right: 20, bottom: 20, left: 20},
 // list image data
 var data = [
     {"label":"Dell LAPTOP", "value":1, "imageLink":"https://www.pikpng.com/pngl/m/30-306273_pixel-heart-png-download-20-x-20-pixel.png"},
-    {"label":"IMAC PRO", "value":1, "imageLink":"https://images-na.ssl-images-amazon.com/images/I/51V8ObWrpKL._AC_SX569_.jpg"}, //font-family
+    {"label":"IMAC PRO", "value":1, "imageLink":"tien.png"}, //font-family
     {"label":"SUZUKI", "value":1, "imageLink":"https://www.pikpng.com/pngl/m/30-306273_pixel-heart-png-download-20-x-20-pixel.png"}, //color
     {"label":"HONDA", "value":1, "imageLink":"https://images-na.ssl-images-amazon.com/images/I/51V8ObWrpKL._AC_SX569_.jpg"}, //font-weight
     {"label":"FERRARI", "value":1, "imageLink":"https://www.pikpng.com/pngl/m/30-306273_pixel-heart-png-download-20-x-20-pixel.png"}, //font-size
-    {"label":"APARTMENT", "value":1, "imageLink":"https://images-na.ssl-images-amazon.com/images/I/51V8ObWrpKL._AC_SX569_.jpg"}, //background-color
+    {"label":"APARTMENT", "value":1, "imageLink":"tien.png"}, //background-color
     {"label":"IPAD PRO", "value":1, "imageLink":"https://www.pikpng.com/pngl/m/30-306273_pixel-heart-png-download-20-x-20-pixel.png"}, //nesting
     {"label":"LAND", "value":1, "imageLink":"https://images-na.ssl-images-amazon.com/images/I/51V8ObWrpKL._AC_SX569_.jpg"}, //bottom
 ];
