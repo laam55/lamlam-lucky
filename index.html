@@ -442,6 +442,13 @@
 			if (!is_random) {
 				is_screen_number_lucky = !is_screen_number_lucky
 				reload_screen()
+
+				// end effect
+				stop_random_now = false
+				stop_spin_now = false
+				$('#canvas').hide()
+				$('.rdnCount').removeClass('scale-effect')
+				$('.button-play-1').addClass('not-allowed')
 			}
 		}
 
