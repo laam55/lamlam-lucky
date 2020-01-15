@@ -102,7 +102,6 @@
 	<script src="libs/crypto-js.min.js"></script>
 	<script>
 		localStorage.setItem('saveKey', 'db2cad79017f8489994623892b300248')
-		// dung1dung@1234567
 		var is_config_page = false
 		var isLogged = localStorage.getItem('isLogged') || false
 		var dataDefault = '1-200'
@@ -242,7 +241,7 @@
 							<div class="col-9">
 								<input type="text" class="form-control" value="${dataDefault}">
 							</div>
-						</div>`
+						</div><hr />`
 						listConfig.push(dataDefault)
 					}
 					$('#list-config').append(html)
@@ -297,7 +296,6 @@
 				listConfigData.push($('#list-config .dataIndex' + i + ' input').val())
 			}
 
-			console.log('appConfig', appConfig)
 			localStorage.setItem('appConfig', JSON.stringify(appConfig))
 		})
 	</script>
