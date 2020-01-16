@@ -286,6 +286,10 @@
 			border: 1px solid #fff;
 		}
 
+		.result-table th {
+			border: 1px solid #fff;
+		}
+
 		/* custom scroll */
 		/* width */
 		::-webkit-scrollbar {
@@ -515,13 +519,20 @@
 		}
 
 		function load_list_result(argument) {
-			result = ''
+			result = `<thead>
+				<tr>
+					<th width="10%">STT</th>
+					<th width="45%">Số may mắn</th>
+					<th width="45%">Thời gian</th>
+					<th width="5%"></th>
+				</tr>
+			</thead>`
 			listResult.forEach((item, index) => {
 				result += `<tr>
-					<td width="10%">${index + 1}</td>
-					<td width="70%">${item.name}</td>
-					<td width="30%">${item.time}</td>
-					<td width="5%"><i class="hover-warning pointer fa fa-trash" onClick="delete_result(${index})"></i></td>
+					<td>${index + 1}</td>
+					<td>${item.name}</td>
+					<td>${item.time}</td>
+					<td><i class="hover-warning pointer fa fa-trash" onClick="delete_result(${index})"></i></td>
 				</tr>`
 			})
 			$('#result-table').html(result)
@@ -596,13 +607,20 @@
 
 		// table
 		function update_inner_table() {
-			result = ''
+			result = `<thead>
+				<tr>
+					<th width="10%">STT</th>
+					<th width="45%">Số may mắn</th>
+					<th width="45%">Thời gian</th>
+					<th width="5%"></th>
+				</tr>
+			</thead>`
 			listResult.forEach((item, index) => {
 				result += `<tr>
-					<td width="10%">${index + 1}</td>
-					<td width="70%">${item.name}</td>
-					<td width="30%">${item.time}</td>
-					<td width="5%"><i class="hover-warning pointer fa fa-trash" onClick="delete_result(${index})"></i></td>
+					<td>${index + 1}</td>
+					<td>${item.name}</td>
+					<td>${item.time}</td>
+					<td><i class="hover-warning pointer fa fa-trash" onClick="delete_result(${index})"></i></td>
 				</tr>`
 			})
 			$('#result-table').html(result)
