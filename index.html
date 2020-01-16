@@ -21,6 +21,15 @@
 		.hover-warning:hover {
 			color: yellow;
 		}
+		.no-select {
+		  -webkit-touch-callout: none; /* iOS Safari */
+		    -webkit-user-select: none; /* Safari */
+		     -khtml-user-select: none; /* Konqueror HTML */
+		       -moz-user-select: none; /* Old versions of Firefox */
+		        -ms-user-select: none; /* Internet Explorer/Edge */
+		            user-select: none; /* Non-prefixed version, currently
+		                                  supported by Chrome, Opera and Firefox */
+		}
 		.background {
 			width: 100%;
 			height: 100%;
@@ -375,6 +384,9 @@
 			font-size: 16px;
 			color: white !important;
 		}
+		image {
+			/*z-index: 9999;*/
+		}
 	</style>
 </head>
 <body>
@@ -393,7 +405,7 @@
 	<div class="absolute-object longDen2">
 		<img src="long-den-3.png" alt="">
 	</div>
-	<div class="wrap-game">
+	<div class="wrap-game no-select">
 		<p class="title">Nola Group - Mừng xuân Canh Tý 2020</p>
         <img id="inca" src="inca.png" alt="">
 		<button class="button-play-1 pointer" onclick="switch_screen_game()">
@@ -839,7 +851,7 @@
 			is_muted = false
 		    // set initial force randomly
 		    // force = Math.floor(Math.random() * randForce) + minForce;
-		    force = 888888888888
+		    force = 888888888
 		    requestAnimationFrame(doAnimation);
 		}
 
@@ -855,6 +867,7 @@
 		    	stop_spin_now = false
 		    	force = force < 12 ? force : 12
 		    }
+		    // console.log(angle)
 		    total += (Math.abs(angle - oldAngle) > 10 ? 4 : Math.abs(angle - oldAngle))
 		    if (total > 5) {
 		    	total = 0

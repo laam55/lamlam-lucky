@@ -25,13 +25,13 @@ var padding = {top: 20, right: 20, bottom: 20, left: 20},
 // list image data
 var data = [
     {"label":"1 cái hôn", "value":1, "imageLink":"https://www.pikpng.com/pngl/m/30-306273_pixel-heart-png-download-20-x-20-pixel.png"},
-    {"label":"50.000vnđ", "value":1, "imageLink":"tien.png"},
-    {"label":"SUZUKI", "value":1, "imageLink":"https://www.pikpng.com/pngl/m/30-306273_pixel-heart-png-download-20-x-20-pixel.png"}, //color
-    {"label":"100.000vnđ", "value":1, "imageLink":"tien.png"},
-    {"label":"FERRARI", "value":1, "imageLink":"https://www.pikpng.com/pngl/m/30-306273_pixel-heart-png-download-20-x-20-pixel.png"}, //font-size
-    {"label":"Chúc bạn may mắn lần sau ^^", "value":1, "imageLink":"happy.png"},
-    {"label":"IPAD", "value":1, "imageLink":"images/ipad.png"},
-    {"label":"ASUS", "value":1, "imageLink":"images/asus.png"},
+    {"label":"50.000vnđ", "value":2, "imageLink":"tien.png"},
+    {"label":"SUZUKI", "value":3, "imageLink":"https://www.pikpng.com/pngl/m/30-306273_pixel-heart-png-download-20-x-20-pixel.png"}, //color
+    {"label":"100.000vnđ", "value":4, "imageLink":"tien.png"},
+    {"label":"FERRARI", "value":5, "imageLink":"https://www.pikpng.com/pngl/m/30-306273_pixel-heart-png-download-20-x-20-pixel.png"}, //font-size
+    {"label":"", "value":6, "imageLink":"images/happy.png"},
+    {"label":"IPAD", "value":7, "imageLink":"images/ipad.png"},
+    {"label":"ASUS", "value":8, "imageLink":"images/asus.png"},
 ];
 var init_rotate = 360 / data.length
 var svg = d3.select('#chart')
@@ -71,6 +71,8 @@ arcs.append("text").attr("transform", function(d){
         d.angle = (d.startAngle + d.endAngle)/2;
         return "rotate(" + (d.angle * 180 / Math.PI - 90) + ")translate(" + (d.outerRadius -10) +")";
     })
+    .attr('x', -init_rotate)
+    .attr('y', 5)
     .attr("text-anchor", "end")
     .text((d, i) => {
         return d.data.label;
@@ -82,7 +84,7 @@ arcs.append("svg:image")
         d.innerRadius = 0;
         d.outerRadius = r;
         d.angle = (d.startAngle + d.endAngle)/2;
-        return "rotate(" + (d.angle * 180 / Math.PI - 90 + init_rotate) + ")translate(" + (d.outerRadius - 30) +")";
+        return "rotate(" + (d.angle * 180 / Math.PI - 90) + ")translate(" + (d.outerRadius - 10) +")";
     })
     .attr('x', -init_rotate)
     .attr('y', -init_rotate)
