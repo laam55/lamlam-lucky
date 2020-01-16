@@ -793,11 +793,12 @@
 					clearInterval(animationTimer);
 					$target.text(num)
 					if (!isTest) {
-						if (appConfig.listConfigUser && appConfig.listConfigUser[num]) {
-							writeAndSaveListResult(appConfig.listConfigUser[num], num)
-						} else {
-							toastr.warning("Không có người này!")
-						}
+						writeAndSaveListResult(num, num)
+						// if (appConfig.listConfigUser && appConfig.listConfigUser[num]) {
+						// 	writeAndSaveListResult(appConfig.listConfigUser[num], num)
+						// } else {
+						// 	toastr.warning("Không có người này!")
+						// }
 					}
 					// update result
 					end_game($target)
