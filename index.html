@@ -507,6 +507,7 @@
 		function delete_result(index) {
 			var conf = confirm("Want to delete?");
 			if (conf) {
+				current_life = current_life > 0 ? current_life - 1 : 0
 				listResult.splice(index, 1)
 				localStorage.setItem('listResult', JSON.stringify(listResult))
 				update_inner_table()
@@ -805,7 +806,7 @@
 				} else {
 					// Generate a random string to use for the next animation step
 					text = "";
-					for (var i = 0; i < 4; i++) {
+					for (var i = 0; i < 3; i++) {
 						text += Math.floor(Math.random() * 10);
 					}
 					$target.text(text);
