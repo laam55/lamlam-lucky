@@ -3,6 +3,7 @@
 <head>
 	<title></title>
 	<link rel="stylesheet" href="libs/bootstrap.min.css">
+	<link rel="stylesheet" href="libs/toastr.min.css">
 	<style>
 		#container {
 			padding: 50px;
@@ -83,7 +84,8 @@
 					<thead class="thead-dark">
 						<tr>
 							<th>STT</th>
-							<th width="60%">Họ tên</th>
+							<th width="30%">Số may mắn</th>
+							<th width="30%">Thời gian</th>
 							<th>Loại game</th>
 						</tr>
 					</thead>
@@ -99,6 +101,7 @@
 		</div>
 	</div>
 	<script src="libs/jquery.min.js"></script>
+	<script src="libs/toastr.min.js"></script>
 	<script src="libs/crypto-js.min.js"></script>
 	<script>
 		localStorage.setItem('saveKey', 'db2cad79017f8489994623892b300248')
@@ -206,8 +209,8 @@
 				<thead class="thead-dark">
 					<tr>
 						<th>STT</th>
-						<th width="40%">Họ tên</th>
-						<th width="20%">Thời gian</th>
+						<th width="30%">Số may mắn</th>
+						<th width="30%">Thời gian</th>
 						<th>Loại game</th>
 					</tr>
 				</thead>`
@@ -268,9 +271,10 @@
 		})
 
 		$('#clear-local-result').click(function() {
+			localStorage.setItem('current_life', 0)
 			localStorage.setItem('listResult', JSON.stringify([]))
 			localStorage.setItem('listResultNumber', JSON.stringify([]))
-			listUser = []
+			listResult = []
 			load_list_result()
 		})
 
@@ -296,6 +300,7 @@
 				listConfigData.push($('#list-config .dataIndex' + i + ' input').val())
 			}
 
+			toastr.success('Lưu thành công!')
 			localStorage.setItem('appConfig', JSON.stringify(appConfig))
 		})
 	</script>
