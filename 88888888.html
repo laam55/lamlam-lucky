@@ -58,6 +58,8 @@
 						</div>
 					</div>
 					<br><br>
+					<input id="number-ignore-input" type="text" class="form-control col-7" placeholder="Ngoại trừ số vd: 1,100,69" autofocus="">
+					<br><br>
 					<div id="list-config">
 					</div>
 				</div>
@@ -115,13 +117,19 @@
 		} else {
 			listResult = []
 		}
+		var ignoreListNumber = localStorage.getItem('ignoreListNumber')
+		if (ignoreListNumber) {
+			ignoreListNumber = ignoreListNumber
+		} else {
+			ignoreListNumber = ''
+		}
 		var appConfig = localStorage.getItem('appConfig')
 		if (appConfig) {
 			appConfig = JSON.parse(appConfig)
 		} else {
 			appConfig = {
-				numberLife: 0,
-				listConfig: [],
+				numberLife: 8,
+				listConfig: ['1-200','1-200','1-200','1-200','1-200','1-200','1-200','1-200'],
 				listConfigUser: {
 					"1": "Pham Tung Lam",
 					"2": "Pham Tung Lam 2",
@@ -131,9 +139,11 @@
 					"6": "Pham Tung Lamm 6",
 				}
 			}
+			localStorage.setItem('appConfig', JSON.stringify(appConfig))
 		}
 		load_list_config()
 		load_list_result()
+		load_list_ignore_number()
 
 		function load_screen() {
 			if (is_config_page || isLogged) {
@@ -229,6 +239,10 @@
 			$('#table-result').html(result)
 		}
 
+		function load_list_ignore_number() {
+			$('#number-ignore-input').val(ignoreListNumber)
+		}
+
 		function render_list_config() {
 			var currentLength = $('#list-config .row').length
 			let numberLife = appConfig.numberLife
@@ -294,6 +308,7 @@
 
 		$('#save-local-data').click(function() {
 			var currentLength = $('#list-config .row').length
+			var ignoreListNumber = $('#number-ignore-input').val()
 			var listConfigData = []
 
 			for (var i = 0; i < currentLength; i++) {
@@ -301,6 +316,8 @@
 			}
 
 			toastr.success('Lưu thành công!')
+			if (ignoreListNumber)
+				localStorage.setItem('ignoreListNumber', ignoreListNumber)
 			localStorage.setItem('appConfig', JSON.stringify(appConfig))
 		})
 	</script>

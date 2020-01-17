@@ -467,6 +467,7 @@
 		<source src="sounds/click.mp3" type="audio/mp3">
 	</audio>
 	<script src="libs/jquery.min.js"></script>
+	<script src="libs/lodash.min.js"></script>
     <script src="libs/d3.v3.min.js" charset="utf-8"></script>
     <script type="text/javascript" src="libs/toastr.min.js"></script>
     <script src="libs/circle.js" charset="utf-8"></script>
@@ -498,12 +499,6 @@
 		var click_sound = document.getElementById('click_sound');
 
 		// list number
-		var listResultNumber = localStorage.getItem('listResultNumber')
-		if (listResultNumber) {
-			listResultNumber = JSON.parse(listResultNumber)
-		} else {
-			listResultNumber = []
-		}
 		var listResult = localStorage.getItem('listResult')
 		if (listResult) {
 			listResult = JSON.parse(listResult)
@@ -511,13 +506,20 @@
 			listResult = []
 		}
 
+		var ignoreListNumber = localStorage.getItem('ignoreListNumber')
+		if (ignoreListNumber) {
+			ignoreListNumber = ignoreListNumber.split(',')
+		} else {
+			ignoreListNumber = []
+		}
+
 		var appConfig = localStorage.getItem('appConfig')
 		if (appConfig) {
 			appConfig = JSON.parse(appConfig)
 		} else {
 			appConfig = {
-				numberLife: 0,
-				listConfig: [],
+				numberLife: 8,
+				listConfig: ['1-200','1-200','1-200','1-200','1-200','1-200','1-200','1-200'],
 				listConfigUser: {
 					"1": "Pham Tung Lam",
 					"2": "Pham Tung Lam 2",
@@ -527,6 +529,7 @@
 					"6": "Pham Tung Lamm 6",
 				}
 			}
+			localStorage.setItem('appConfig', JSON.stringify(appConfig))
 		}
 		var appConfigLuckyPage = localStorage.getItem('appConfigLuckyPage') || null
 		var current_life = localStorage.getItem('current_life') || 0;
@@ -772,7 +775,7 @@
 					}
 				}
 				var total_number_while = 0
-				while (listResultNumber.indexOf(random_number) >= 0 && total_number_while < totalNumber) {
+				while ((_.findIndex(listResult, ['name', random_number]) >= 0 || ignoreListNumber.indexOf(random_number) >= 0) && total_number_while < (totalNumber * 3)) {
 					total_number_while++
 					for (var i = 0; i < listAfterConvert.length; i++) {
 						if (random_position >= listAfterConvert[i].start && random_position <= listAfterConvert[i].end) {
@@ -836,9 +839,7 @@
 				gameType: 1,
 			}
 			listResult.push(resultItem)
-			listResultNumber.push(number)
 			localStorage.setItem('listResult', JSON.stringify(listResult))
-			localStorage.setItem('listResultNumber', JSON.stringify(listResultNumber))
 		}
 
 		// spinning wheel
