@@ -736,7 +736,50 @@
 
 		// callback event when play game & endgame
 		// get random number srom string 1-200,12,44,321
+		function splitString(targetNumber, string) {
+			listString = string.split(',')
+
+			arrString = []
+			listString.forEach(item => {
+				if (item.indexOf('-') >= 0) {
+					start = parseInt(item.substring(0, item.indexOf('-')))
+					end = parseInt(item.substring(item.indexOf('-') + 1))
+					
+					if (start > targetNumber || targetNumber > end) {
+						arrString.push(item)
+					} else if (targetNumber == start) {
+						arrString.push((start + 1) + '-' + end)
+					} else if (targetNumber == end) {
+						arrString.push(start + '-' + (end - 1))
+					} else if (start < targetNumber && targetNumber < end) {
+						arrString.push(start + '-' + (targetNumber - 1))
+						arrString.push((targetNumber + 1) + '-' + end)
+					}
+				} else {
+					start = parseInt(item)
+					if (start != targetNumber) {
+						arrString.push(start + "")
+					}
+				}
+			})
+			
+			return arrString.join(',')
+		}
+
+		function convertString(ignoreNumber, string) {
+			if (Array.isArray(ignoreNumber) && ignoreNumber.length > 0) {
+				ignoreNumber.forEach(item => {
+					string = splitString(item, string)
+				})
+			}
+				
+			return string
+		}
 		function get_random_number(string) {
+			let listResultNumber = _.compact(_.map(listResult, 'name'))
+			console.log('get_random_number', listResultNumber, [...listResultNumber, ...ignoreListNumber], string)
+			string = convertString([...listResultNumber, ...ignoreListNumber], string)
+			console.log('get_random_number', string)
 			let random_number
 			if (string) {
 				let list = string.split(',')
@@ -772,16 +815,6 @@
 					if (random_position >= listAfterConvert[i].start && random_position <= listAfterConvert[i].end) {
 						random_number = listAfterConvert[i].startNumber + (random_position - listAfterConvert[i].start)
 						break
-					}
-				}
-				var total_number_while = 0
-				while ((_.findIndex(listResult, ['name', random_number]) >= 0 || ignoreListNumber.indexOf(random_number) >= 0) && total_number_while < (totalNumber * 3)) {
-					total_number_while++
-					for (var i = 0; i < listAfterConvert.length; i++) {
-						if (random_position >= listAfterConvert[i].start && random_position <= listAfterConvert[i].end) {
-							random_number = listAfterConvert[i].startNumber + (random_position - listAfterConvert[i].start)
-							break
-						}
 					}
 				}
 			}
