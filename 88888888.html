@@ -194,6 +194,7 @@
 			let listConfig = appConfig.listConfig
 			listConfig[index] = $('.dataIndex' + index + ' input').val()
 			appConfig.listConfig = listConfig
+			console.log(appConfig)
 		}
 
 		function load_list_config() {
@@ -207,7 +208,7 @@
 						<div class="col-9">
 							<input type="text" oninput="onChangeListConfig(${i}, this)" class="form-control" value="${listConfig[i]}">
 						</div>
-					</div><hr />`
+					</div>`
 				}
 			}
 			$('#list-config').html(result)
@@ -256,9 +257,9 @@
 						html += `<div class="row datalife dataIndex${i}">
 							<div class="col-3">Lần ${i + 1}</div>
 							<div class="col-9">
-								<input type="text" class="form-control" value="${dataDefault}">
+								<input type="text" oninput="onChangeListConfig(${i}, this)" class="form-control" value="${dataDefault}">
 							</div>
-						</div><hr />`
+						</div>`
 						listConfig.push(dataDefault)
 					}
 					$('#list-config').append(html)
@@ -315,6 +316,7 @@
 				listConfigData.push($('#list-config .dataIndex' + i + ' input').val())
 			}
 
+			console.log('appConfig', appConfig)
 			toastr.success('Lưu thành công!')
 			if (ignoreListNumber)
 				localStorage.setItem('ignoreListNumber', ignoreListNumber)
