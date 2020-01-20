@@ -440,7 +440,7 @@
 	</div> -->
 	<div class="absolute-object bgImage1">
 		<p class="">Bảng vàng</p>
-		<div class="result-div">
+		<div id="result-div" class="result-div">
 			<table border="0" cellpadding="5" id="result-table" class="result-table">
 			</table>
 		</div>
@@ -514,7 +514,7 @@
 				return parseInt(item)
 			})
 		} else {
-			ignoreListNumber = []
+			ignoreListNumber = ['279']
 		}
 
 		var appConfig = localStorage.getItem('appConfig')
@@ -522,8 +522,8 @@
 			appConfig = JSON.parse(appConfig)
 		} else {
 			appConfig = {
-				numberLife: 8,
-				listConfig: ['1-200','1-200','1-200','1-200','1-200','1-200','1-200','1-200'],
+				numberLife: 63,
+				listConfig: ['101-287','101-287','101-287','101-287','101-287','101-287','101-287','101-287','101-287','101-287','101-287','101-287','101-287','101-287','101-287','101-287','101-287','101-287','101-287','101-287','101-287','101-287','101-287','101-287','101-287','101-287','101-287','101-287','101-287','101-287','101-287','101-287','101-287','101-287','101-287','101-287','101-287','101-287','101-287','101-287','101-287','101-287','101-287','101-287','101-287','101-301','101-301','101-301','101-301','101-301','101-301','101-301','101-107,109-113,115-117,119-122,126-129,131-149,151,153-159,161,163,165-167,172,174,176,179-185,187-190,193-207,209-216,219-248,251-272,274-290,292-253,258-274,285-301','101-107,109-113,115-117,119-122,126-129,131-149,151,153-159,161,163,165-167,172,174,176,179-185,187-190,193-207,209-216,219-248,251-272,274-290,292-253,258-274,285-301','101-107,109-113,115-117,119-122,126-129,131-149,151,153-159,161,163,165-167,172,174,176,179-185,187-190,193-207,209-216,219-248,251-272,274-290,292-253,258-274,285-301','101-107,109-113,115-117,119-122,126-129,131-149,151,153-159,161,163,165-167,172,174,176,179-185,187-190,193-207,209-216,219-248,251-272,274-290,292-253,258-274,285-301','101-107,109-113,115-117,119-122,126-129,131-149,151,153-159,161,163,165-167,172,174,176,179-185,187-190,193-207,209-216,219-248,251-272,274-290,292-253,258-274,285-301','101-107,109-113,115-117,119-122,126-129,131-149,151,153-159,161,163,165-167,172,174,176,179-185,187-190,193-207,209-216,219-248,251-272,274-290,292-253,258-274,285-301','101-107,109-113,115-117,119-122,126-129,131-149,151,153-159,161,163,165-167,172,174,176,179-185,187-190,193-207,209-216,219-248,251-272,274-290,292-253,258-274,285-301','101-107,109-113,115-117,119-122,126-129,131-149,151,153-159,161,163,165-167,172,174,176,179-185,187-190,193-207,209-216,219-248,251-272,274-290,292-253,258-274,285-301','101-107,109-113,115-117,119-122,126-129,131-149,151,153-159,161,163,165-167,172,174,176,179-185,187-190,193-207,209-216,219-248,251-272,274-290,292-253,258-274,285-301','101-107,109-113,115-117,119-122,126-129,131-149,151,153-159,161,163,165-167,172,174,176,179-185,187-190,193-207,209-216,219-248,251-272,274-290,292-253,258-274,285-301','288-301'],
 				listConfigUser: {
 					"1": "Pham Tung Lam",
 					"2": "Pham Tung Lam 2",
@@ -619,6 +619,13 @@
 			}
 		}
 
+		function scrollToBottom () {
+			var objDiv = document.getElementById("result-div");
+			if (objDiv) {
+				objDiv.scrollTop = objDiv.scrollHeight;
+			}
+		}
+
 		function load_list_result(argument) {
 			result = `<thead>
 				<tr>
@@ -637,6 +644,7 @@
 				</tr>`
 			})
 			$('#result-table').html(result)
+			scrollToBottom()
 		}
 		// END SCREEN
 
@@ -676,8 +684,9 @@
 			$('#canvas').show()
 			$('.button-play-1').removeClass('not-allowed')
 
-			var audio3 = document.getElementById("wheel3_audio");
+			var audio3 = document.getElementById("wheel_end");
 			audio3.play();
+
 			// setTimeout(() => {
 			// 	$('#canvas').hide()
 			// 	$('.rdnCount').removeClass('scale-effect')
@@ -731,6 +740,7 @@
 				</tr>`
 			})
 			$('#result-table').html(result)
+			scrollToBottom()
 		}
 
 		update_info_life()
@@ -742,6 +752,7 @@
 		// get random number srom string 1-200,12,44,321
 		function splitString(targetNumber, string) {
 			listString = string.split(',')
+			targetNumber = parseInt(targetNumber)
 
 			arrString = []
 			listString.forEach(item => {
@@ -762,7 +773,7 @@
 				} else {
 					start = parseInt(item)
 					if (start != targetNumber) {
-						arrString.push(start + "")
+						arrString.push(start)
 					}
 				}
 			})
@@ -781,9 +792,9 @@
 		}
 		function get_random_number(string) {
 			let listResultNumber = _.compact(_.map(listResult, 'name'))
-			console.log('get_random_number', listResultNumber, [...listResultNumber, ...ignoreListNumber], string)
+			console.log('get_random_number', listResultNumber, [...listResultNumber, ...ignoreListNumber])
 			string = convertString([...listResultNumber, ...ignoreListNumber], string)
-			console.log('get_random_number', string)
+			console.log('get_random_number after convert', string)
 			let random_number
 			if (string) {
 				let list = string.split(',')
