@@ -21,6 +21,7 @@ toastr.options = {
 var wheel1 = document.getElementById('wheel1_audio');
 var wheel2 = document.getElementById('wheel2_audio');
 var wheel3 = document.getElementById('wheel3_audio');
+var blackjack_audio = document.getElementById('blackjack_audio');
 var wheel_end = document.getElementById('wheel_end');
 var click_sound = document.getElementById('click_sound');
 
@@ -32,102 +33,10 @@ if (listResult) {
   listResult = [];
 }
 
-var ignoreListNumber = localStorage.getItem('ignoreListNumber');
-if (ignoreListNumber) {
-  ignoreListNumber = ignoreListNumber.split(',');
-  ignoreListNumber = ignoreListNumber.map((item) => {
-    if (!item) item = 0;
-    return parseInt(item);
-  });
-} else {
-  ignoreListNumber = [
-    279, 280, 281, 283, 284, 244, 258, 259, 260, 261, 262, 263, 264, 271, 272,
-  ];
-}
-
-var appConfig = localStorage.getItem('appConfig');
-if (appConfig) {
-  appConfig = JSON.parse(appConfig);
-} else {
-  appConfig = {
-    numberLife: 63,
-    listConfig: [
-      '101-287',
-      '101-287',
-      '101-287',
-      '101-287',
-      '101-287',
-      '101-287',
-      '101-287',
-      '101-287',
-      '101-287',
-      '101-287',
-      '101-287',
-      '101-287',
-      '101-287',
-      '101-287',
-      '101-287',
-      '101-287',
-      '101-287',
-      '101-287',
-      '101-287',
-      '101-287',
-      '101-287',
-      '101-287',
-      '101-287',
-      '101-287',
-      '101-287',
-      '101-287',
-      '101-287',
-      '101-287',
-      '101-287',
-      '101-287',
-      '101-287',
-      '101-287',
-      '101-287',
-      '101-287',
-      '101-287',
-      '101-287',
-      '101-287',
-      '101-287',
-      '101-287',
-      '101-287',
-      '101-287',
-      '101-287',
-      '101-287',
-      '101-287',
-      '101-287',
-      '101-301',
-      '101-301',
-      '101-301',
-      '101-301',
-      '101-301',
-      '101-301',
-      '101-301',
-      '101-107,109-113,115-117,119-122,126-129,131-149,151,153-159,161,163,165-167,172,174,176,179-185,187-190,193-207,209-216,219-248,251-272,274-290,292-253,258-274,285-301',
-      '101-107,109-113,115-117,119-122,126-129,131-149,151,153-159,161,163,165-167,172,174,176,179-185,187-190,193-207,209-216,219-248,251-272,274-290,292-253,258-274,285-301',
-      '101-107,109-113,115-117,119-122,126-129,131-149,151,153-159,161,163,165-167,172,174,176,179-185,187-190,193-207,209-216,219-248,251-272,274-290,292-253,258-274,285-301',
-      '101-107,109-113,115-117,119-122,126-129,131-149,151,153-159,161,163,165-167,172,174,176,179-185,187-190,193-207,209-216,219-248,251-272,274-290,292-253,258-274,285-301',
-      '101-107,109-113,115-117,119-122,126-129,131-149,151,153-159,161,163,165-167,172,174,176,179-185,187-190,193-207,209-216,219-248,251-272,274-290,292-253,258-274,285-301',
-      '101-107,109-113,115-117,119-122,126-129,131-149,151,153-159,161,163,165-167,172,174,176,179-185,187-190,193-207,209-216,219-248,251-272,274-290,292-253,258-274,285-301',
-      '101-107,109-113,115-117,119-122,126-129,131-149,151,153-159,161,163,165-167,172,174,176,179-185,187-190,193-207,209-216,219-248,251-272,274-290,292-253,258-274,285-301',
-      '101-107,109-113,115-117,119-122,126-129,131-149,151,153-159,161,163,165-167,172,174,176,179-185,187-190,193-207,209-216,219-248,251-272,274-290,292-253,258-274,285-301',
-      '101-107,109-113,115-117,119-122,126-129,131-149,151,153-159,161,163,165-167,172,174,176,179-185,187-190,193-207,209-216,219-248,251-272,274-290,292-253,258-274,285-301',
-      '101-107,109-113,115-117,119-122,126-129,131-149,151,153-159,161,163,165-167,172,174,176,179-185,187-190,193-207,209-216,219-248,251-272,274-290,292-253,258-274,285-301',
-      '288-301',
-    ],
-    listConfigUser: {
-      1: 'Pham Tung Lam',
-      2: 'Pham Tung Lam 2',
-      3: 'Pham Tung Lam 3',
-      4: 'Pham Tung Lam 4',
-      5: 'Pham Tung Lam 5 ',
-      6: 'Pham Tung Lamm 6',
-    },
-  };
-  localStorage.setItem('appConfig', JSON.stringify(appConfig));
-}
-var appConfigLuckyPage = localStorage.getItem('appConfigLuckyPage') || null;
+var appConfig = {
+  numberLife: 10,
+  range: [1, 150],
+};
 var current_life = localStorage.getItem('current_life') || 0;
 var is_random = false;
 var is_screen_number_lucky = true;
@@ -372,59 +281,29 @@ function getListNumberFromString(string) {
   return array;
 }
 
-function get_random_number(string) {
-  let listResultNumber = _.compact(_.map(listResult, 'name'));
-  let listIgnoreNumbers = [...listResultNumber, ...ignoreListNumber];
-  let random_number = null;
-  let list = _.split(string, ',');
-  let listAfterConvert = [];
-
-  if (string) {
-    list.forEach((item) => {
-      listAfterConvert = [
-        ...listAfterConvert,
-        ...getListNumberFromString(item),
-      ];
-    });
-    listAfterConvert = _.filter(listAfterConvert, function (number) {
-      return !listIgnoreNumbers.includes(number);
-    });
-    let random_position = Math.floor(Math.random() * listAfterConvert.length);
-    random_number = listAfterConvert[random_position];
-  }
-
-  return random_number;
+function get_random_number(range) {
+  return _.random(range?.[0], range?.[1]);
 }
 function play_game() {
-  console.log('start game!');
+  console.log('start game!', appConfig, current_life);
   play_game_effect();
   if (!is_random) {
     if (is_screen_number_lucky) {
       console.log('---- random ----');
-      if (appConfig.listConfig && appConfig.listConfig[current_life]) {
-        let random_number = get_random_number(
-          appConfig.listConfig[current_life],
-        );
+      if (current_life < appConfig?.numberLife) {
+        let random_number = get_random_number(appConfig.range);
         if (random_number) {
-          rdnCounter($('.rdnCount'), 88888888, random_number, 80);
+          handleAnimLuckyNumber($('.rdnCount'), 18500, random_number, 100);
           current_life++;
           localStorage.setItem('current_life', current_life);
           update_info_life();
         } else {
-          toastr.success('Đã hết số để random!');
+          toastr.error('Đã hết số để random!');
         }
-      } else if (appConfig.listConfig) {
-        toastr.success(
-          'Hết lượt, chuyển sang đang chế độ thử nghiệm, không tính kết quả!',
-        );
-        let random_number = generate_random_number(1000, 9999);
-        rdnCounter($('.rdnCount'), 88888888, random_number, 80, true);
+        return;
       } else {
-        toastr.success(
-          'Chưa config lượt chơi, chuyển sang đang chế độ thử nghiệm, không tính kết quả!',
-        );
-        let random_number = generate_random_number(1000, 9999);
-        rdnCounter($('.rdnCount'), 88888888, random_number, 80, true);
+        toastr.error('Hết lượt quay!');
+        return;
       }
     } else {
       // spinn
@@ -478,7 +357,7 @@ function roulette_spin(btn) {
   is_muted = false;
   // set initial force randomly
   // force = Math.floor(Math.random() * randForce) + minForce;
-  force = 888888888;
+  force = 8888888;
   requestAnimationFrame(doAnimation);
 }
 
@@ -521,8 +400,6 @@ function doAnimation() {
 }
 
 // random number
-// rdnCounter($(".rdnCount"), 2000);
-// from 0 to N
 $('.count').each(function () {
   $(this)
     .prop('Counter', 0)
@@ -539,14 +416,22 @@ $('.count').each(function () {
       },
     );
 });
-function rdnCounter($target, duration, num, speed, isTest = false) {
+
+function handleAnimLuckyNumber(
+  $target,
+  duration,
+  num,
+  speed = 80,
+  isTest = false,
+) {
   var $target, started, current, text, len;
   num = num || $target.data('count');
-  speed = 80;
   len = (num + '').length;
   started = new Date().getTime();
   is_random = true;
   is_muted = false;
+
+  // blackjack_audio && blackjack_audio.play();
 
   animationTimer = setInterval(function () {
     current = new Date().getTime();
@@ -554,19 +439,15 @@ function rdnCounter($target, duration, num, speed, isTest = false) {
     if (current - started >= duration || stop_random_now) {
       stop_random_now = false;
       clearInterval(animationTimer);
-      $target.text(num);
+      $target.text(addZeroToNumber(num, 3));
       if (!isTest) {
+        // blackjack_audio && blackjack_audio.stop();
         writeAndSaveListResult(num, num);
         show_modal(
           'Xin chúc mừng số may mắn <b style=color:red>' +
             num +
             '</b> đã trúng thưởng!',
         );
-        // if (appConfig.listConfigUser && appConfig.listConfigUser[num]) {
-        // 	writeAndSaveListResult(appConfig.listConfigUser[num], num)
-        // } else {
-        // 	toastr.warning("Không có người này!")
-        // }
       }
       // update result
       end_game($target);
@@ -574,9 +455,25 @@ function rdnCounter($target, duration, num, speed, isTest = false) {
       // Generate a random string to use for the next animation step
       text = '';
       for (var i = 0; i < 3; i++) {
-        text += Math.floor(Math.random() * 10);
+        if (current - started > (duration / 3) * (i + 1)) {
+          // text += getNumPosition(num, i);
+          text += `<span class="gold-static">${getNumPosition(num, i)}</span>`;
+        } else {
+          text += `<span class="gold-anim">${Math.floor(
+            Math.random() * 10,
+          )}</span>`;
+        }
       }
-      $target.text(text);
+      $target.html(text);
     }
   }, speed);
+}
+
+function getNumPosition(num, pos) {
+  return _.split(addZeroToNumber(num, 3), '')[pos] ?? 0;
+}
+
+function addZeroToNumber(num, maxLen = 3) {
+  const countOfZero = maxLen - _.size(_.split(_.toString(num), ''));
+  return `${_.repeat('0', countOfZero)}${_.toString(num)}`;
 }
