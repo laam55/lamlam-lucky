@@ -46,6 +46,7 @@ var is_stop_audio = true;
 var is_muted = false;
 
 load_list_result();
+UpdateAudioBtn();
 
 function UpdateAudioBtn() {
   if (is_muted) {
