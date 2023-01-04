@@ -17,7 +17,6 @@ toastr.options = {
 };
 
 // sound
-// var background_audio = document.getElementById('wheel1_audio');
 var wheel1 = document.getElementById('wheel1_audio');
 var wheel2 = document.getElementById('wheel2_audio');
 var wheel3 = document.getElementById('wheel3_audio');
@@ -37,43 +36,44 @@ var appConfig = {
   numberLife: 10,
   range: [1, 150],
 };
-var current_life = localStorage.getItem('current_life') || 0;
+var current_life = _.size(listResult) || 0;
 var is_random = false;
 var is_screen_number_lucky = true;
 // enter to stop
 var stop_random_now = false;
 var stop_spin_now = false;
-var is_muted = true;
+var is_stop_audio = true;
+var is_muted = false;
 
-// SCREEN
-reload_screen();
 load_list_result();
-function reload_screen(argument) {
-  if (is_screen_number_lucky) {
-    $('#wrap-wheel-lucky').hide();
-    $('#inca').hide();
-    $('.rdnCount').show();
-    $('.button-play-1 span').html(1);
+
+function UpdateAudioBtn() {
+  if (is_muted) {
+    MuteAudio(wheel1);
+    MuteAudio(wheel2);
+    MuteAudio(wheel3);
+    MuteAudio(wheel_end);
+    MuteAudio(click_sound);
+    MuteAudio(blackjack_audio);
+    $('.button-play-1 span').html(
+      `<i class="fa fa-volume-off" aria-hidden="true"></i>`,
+    );
   } else {
-    $('#wrap-wheel-lucky').show();
-    $('#inca').show();
-    $('.rdnCount').hide();
-    $('.button-play-1 span').html(2);
+    UnMuteAudio(wheel1);
+    UnMuteAudio(wheel2);
+    UnMuteAudio(wheel3);
+    UnMuteAudio(wheel_end);
+    UnMuteAudio(click_sound);
+    UnMuteAudio(blackjack_audio);
+    $('.button-play-1 span').html(
+      `<i class="fa fa-volume-up" aria-hidden="true"></i>`,
+    );
   }
 }
 
-function switch_screen_game(argument) {
-  if (!is_random) {
-    is_screen_number_lucky = !is_screen_number_lucky;
-    reload_screen();
-
-    // end effect
-    stop_random_now = false;
-    stop_spin_now = false;
-    $('#canvas').hide();
-    $('.rdnCount').removeClass('scale-effect');
-    $('.button-play-1').addClass('not-allowed');
-  }
+function ToggleMute() {
+  is_muted = !is_muted;
+  UpdateAudioBtn();
 }
 
 var audio1ended = true;
@@ -81,7 +81,7 @@ var audio2ended = true;
 var audio3ended = true;
 
 function playSound() {
-  if (!is_muted) {
+  if (!is_stop_audio) {
     var audio = document.getElementById('wheel1_audio');
     if (audio1ended) {
       audio1ended = false;
@@ -121,11 +121,10 @@ function playSound() {
 playSound();
 
 function delete_result(index) {
-  var conf = confirm('Want to delete?');
+  var conf = confirm('Xác nhận xóa?');
   if (conf) {
     current_life = current_life > 0 ? current_life - 1 : 0;
     listResult.splice(index, 1);
-    localStorage.setItem('current_life', current_life);
     update_info_life();
     localStorage.setItem('listResult', JSON.stringify(listResult));
     update_inner_table();
@@ -139,7 +138,7 @@ function scrollToBottom() {
   }
 }
 
-function load_list_result(argument) {
+function load_list_result() {
   result = `<thead>
         <tr>
           <th width="10%">STT</th>
@@ -151,7 +150,7 @@ function load_list_result(argument) {
   listResult.forEach((item, index) => {
     result += `<tr>
           <td>${index + 1}</td>
-          <td>${item.name}</td>
+          <td>${item?.luckyNum ?? ''}</td>
           <td>${item.time}</td>
           <td><i class="hover-warning pointer fa fa-trash" onClick="delete_result(${index})"></i></td>
         </tr>`;
@@ -171,7 +170,7 @@ $('.app-modal-container .ok').click(function (e) {
   hide_modal();
 });
 
-function hide_modal(alert) {
+function hide_modal() {
   $('.app-modal-container').hide();
 }
 
@@ -185,25 +184,18 @@ $('.app-modal-container').click(function (event) {
 // HIDE MODAL
 
 // EFFECT GAME
-function play_game_effect(argument) {
+function play_game_effect() {
   $('#canvas').hide();
   $('.rdnCount').removeClass('scale-effect');
-  $('.button-play-1').addClass('not-allowed');
   click_sound.play();
 }
 
-function end_game_effect(argument) {
+function end_game_effect() {
   $('.rdnCount').addClass('scale-effect');
   $('#canvas').show();
-  $('.button-play-1').removeClass('not-allowed');
 
   var audio3 = document.getElementById('wheel_end');
   audio3.play();
-
-  // setTimeout(() => {
-  // 	$('#canvas').hide()
-  // 	$('.rdnCount').removeClass('scale-effect')
-  // }, 5000)
 }
 // effect dynamic image corner
 $(document).on('mousemove', function (event) {
@@ -228,11 +220,6 @@ $(document).keypress(function (event) {
   }
   hide_modal();
 });
-// edn effect game
-
-function generate_random_number(min, max) {
-  return Math.floor(Math.random() * (max - min + 1) + min);
-}
 
 // table
 function update_inner_table() {
@@ -247,7 +234,7 @@ function update_inner_table() {
   listResult.forEach((item, index) => {
     result += `<tr>
           <td>${index + 1}</td>
-          <td>${item.name}</td>
+          <td>${item?.luckyNum ?? ''}</td>
           <td>${item.time}</td>
           <td><i class="hover-warning pointer fa fa-trash" onClick="delete_result(${index})"></i></td>
         </tr>`;
@@ -282,8 +269,13 @@ function getListNumberFromString(string) {
 }
 
 function get_random_number(range) {
-  return _.random(range?.[0], range?.[1]);
+  let randNum = _.random(range?.[0], range?.[1]);
+  while (!!_.find(listResult, (o) => IsEqualStr(o?.luckyNum, randNum))) {
+    randNum = get_random_number(range);
+  }
+  return randNum;
 }
+
 function play_game() {
   console.log('start game!', appConfig, current_life);
   play_game_effect();
@@ -295,7 +287,6 @@ function play_game() {
         if (random_number) {
           handleAnimLuckyNumber($('.rdnCount'), 18500, random_number, 100);
           current_life++;
-          localStorage.setItem('current_life', current_life);
           update_info_life();
         } else {
           toastr.error('Đã hết số để random!');
@@ -319,12 +310,12 @@ function end_game($target) {
   is_random = false;
   stop_random_now = false;
   stop_spin_now = false;
-  is_muted = true;
+  is_stop_audio = true;
   end_game_effect();
   update_inner_table();
 }
 
-function writeAndSaveListResult(name, number) {
+function writeAndSaveListResult(luckyNum) {
   let today = new Date();
   var date =
     today.getDate() + '/' + (today.getMonth() + 1) + '/' + today.getFullYear();
@@ -333,7 +324,7 @@ function writeAndSaveListResult(name, number) {
 
   resultItem = {
     time: `${time} ${date}`,
-    name: name,
+    luckyNum,
     gameType: 1,
   };
   listResult.push(resultItem);
@@ -354,7 +345,7 @@ var values = [
 
 function roulette_spin(btn) {
   is_random = true;
-  is_muted = false;
+  is_stop_audio = false;
   // set initial force randomly
   // force = Math.floor(Math.random() * randForce) + minForce;
   force = 8888888;
@@ -429,9 +420,9 @@ function handleAnimLuckyNumber(
   len = (num + '').length;
   started = new Date().getTime();
   is_random = true;
-  is_muted = false;
+  is_stop_audio = false;
 
-  // blackjack_audio && blackjack_audio.play();
+  PlayAudio(blackjack_audio);
 
   animationTimer = setInterval(function () {
     current = new Date().getTime();
@@ -439,34 +430,39 @@ function handleAnimLuckyNumber(
     if (current - started >= duration || stop_random_now) {
       stop_random_now = false;
       clearInterval(animationTimer);
-      $target.text(addZeroToNumber(num, 3));
+      $target.html(GetHtmlGoldText(addZeroToNumber(num, 3)));
       if (!isTest) {
-        // blackjack_audio && blackjack_audio.stop();
-        writeAndSaveListResult(num, num);
+        StopAudio(blackjack_audio);
+        writeAndSaveListResult(num);
         show_modal(
           'Xin chúc mừng số may mắn <b style=color:red>' +
             num +
             '</b> đã trúng thưởng!',
         );
       }
-      // update result
       end_game($target);
     } else {
-      // Generate a random string to use for the next animation step
       text = '';
       for (var i = 0; i < 3; i++) {
         if (current - started > (duration / 3) * (i + 1)) {
-          // text += getNumPosition(num, i);
-          text += `<span class="gold-static">${getNumPosition(num, i)}</span>`;
+          text += GetHtmlGoldText(getNumPosition(num, i));
         } else {
-          text += `<span class="gold-anim">${Math.floor(
-            Math.random() * 10,
-          )}</span>`;
+          text += GetHtmlGoldText(Math.floor(Math.random() * 10));
         }
       }
       $target.html(text);
     }
   }, speed);
+}
+
+function GetHtmlGoldText(numStr) {
+  return _.reduce(
+    _.split(_.toString(numStr), ''),
+    (html, item) => {
+      return `${html}<span class="gold-text">${item}</span>`;
+    },
+    '',
+  );
 }
 
 function getNumPosition(num, pos) {
@@ -476,4 +472,31 @@ function getNumPosition(num, pos) {
 function addZeroToNumber(num, maxLen = 3) {
   const countOfZero = maxLen - _.size(_.split(_.toString(num), ''));
   return `${_.repeat('0', countOfZero)}${_.toString(num)}`;
+}
+
+function PlayAudio(audioElement) {
+  audioElement && audioElement.play();
+}
+
+function PauseAudio(audioElement) {
+  audioElement && audioElement.play();
+}
+
+function MuteAudio(audioElement) {
+  audioElement && (audioElement.muted = true);
+}
+
+function UnMuteAudio(audioElement) {
+  audioElement && (audioElement.muted = false);
+}
+
+function StopAudio(audioElement) {
+  if (audioElement) {
+    audioElement.pause();
+    audioElement.currentTime = 0;
+  }
+}
+
+function IsEqualStr(v1, v2) {
+  return !!_.toString(v1) && _.toString(v1) === _.toString(v2);
 }

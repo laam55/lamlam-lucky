@@ -25,18 +25,15 @@
     </div>
     <div class="wrap-game no-select">
       <p class="title">NOVAON YEP 2022 - MỪNG XUÂN TÂN MÃO 2023</p>
-      <img id="inca" src="images/inca.png" alt="" />
-      <button class="button-play-1 pointer" onclick="switch_screen_game()">
+      <button class="button-play-1 pointer" onclick="ToggleMute()">
         <span> 1 </span>
       </button>
       <div>
-        <div id="wrap-wheel-lucky">
-          <div id="wheel-lucky" class="wheel-lucky roulette_wheel">
-            <div id="chart"></div>
-            <img class="container-circle" src="images/wheel-1.png" alt="" />
-          </div>
-        </div>
-        <span class="rdnCount gold" data-count="120">888888</span>
+        <span class="rdnCount gold" data-count="120">
+          <span class="gold-text">0</span>
+          <span class="gold-text">0</span>
+          <span class="gold-text">0</span>
+        </span>
       </div>
       <div>
         <button class="button-play pointer" onclick="play_game()">
