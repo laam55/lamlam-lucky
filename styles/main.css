@@ -74,6 +74,12 @@ img#inca {
   font-weight: bold;
   font-size: 27px;
   text-shadow: 2px 2px 0 rgb(119 108 28);
+  margin: 0px;
+}
+.novaon-logo {
+  width: 10vh;
+  height: 10vh;
+  margin-bottom: 8px;
 }
 .not-allowed {
   cursor: not-allowed !important;
@@ -165,10 +171,11 @@ p.info-life {
 .count,
 .rdnCount {
   display: inline-block;
-  font-size: 10em;
+  font-size: 12em;
   color: #808080;
   font-family: "jersey-m54-font", "Roboto", Helvetica, Arial, sans-serif !important;
   display: flex;
+  margin: 10px 0px 30px 0px;
 }
 
 .gold-text {
@@ -375,4 +382,11 @@ p.info-life {
 text {
   font-size: 16px;
   color: white !important;
+}
+
+#form-config {
+  padding: 20px;
+}
+#form-config input {
+  margin-right: 10px;
 }

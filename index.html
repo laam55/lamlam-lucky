@@ -2,6 +2,7 @@
 <html>
   <head>
     <title></title>
+    <link rel="icon" type="image/x-icon" href="images/logo.ico" />
     <link rel="stylesheet" href="libs/bootstrap.min.css" />
     <link rel="stylesheet" href="libs/circle.css" />
     <link rel="stylesheet" href="libs/FontAwesome/css/font-awesome.min.css" />
@@ -24,9 +25,13 @@
       <img src="images/long-den-3.png" alt="" />
     </div>
     <div class="wrap-game no-select">
-      <p class="title">NOVAON YEP 2022 - MỪNG XUÂN TÂN MÃO 2023</p>
+      <img class="novaon-logo" src="images/novaon.png" alt="" />
+      <p class="title">
+        NOVAON YEP 2022 <br />
+        MỪNG XUÂN TÂN MÃO 2023
+      </p>
       <button class="button-play-1 pointer" onclick="ToggleMute()">
-        <span></span>
+        <span><i class="fa fa-volume-up" aria-hidden="true"></i></span>
       </button>
       <div>
         <span class="rdnCount gold" data-count="120">
@@ -53,6 +58,7 @@
         ></table>
       </div>
     </div>
+    <div id="wheel-lucky"></div>
     <div class="follow-mouse-left follow-mouse-bottom absolute-object bgImage3">
       <img src="images/mua-lan.png" alt="" />
     </div>
@@ -88,6 +94,8 @@
     <script src="libs/d3.v3.min.js" charset="utf-8"></script>
     <script type="text/javascript" src="libs/toastr.min.js"></script>
     <script src="libs/circle.js" charset="utf-8"></script>
+    <script src="scripts/helper.js"></script>
+    <script src="scripts/api.js"></script>
     <script src="scripts/main-new.js"></script>
     <script src="scripts/firework.js"></script>
   </body>

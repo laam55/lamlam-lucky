@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Cấu hình</title>
+    <link rel="icon" type="image/x-icon" href="images/logo.ico" />
+    <link rel="stylesheet" href="styles/main.css" />
+  </head>
+  <body>
+    <form id="form-config">
+      <h3>Cấu hình</h3>
+      <input id="numberLife" type="number" placeholder="Số lần quay" required>
+      <br>
+      <br>
+      <input id="rangeFrom" type="number" placeholder="Số từ" required>
+      <input id="rangeTo" type="number" placeholder="Đến" required>
+      <br>
+      <br>
+      <input id="btnSave" type="submit" value="Lưu">
+    </form>
+    <script src="libs/jquery.min.js"></script>
+    <script src="libs/toastr.min.js"></script>
+    <script src="scripts/helper.js"></script>
+    <script>
+      Init();
+      function Init() {
+        let appConfig = GetLocalStorage('appConfig', null);
+        $('#numberLife').val(appConfig?.numberLife || '');
+        $('#rangeFrom').val(appConfig?.range?.[0] || '');
+        $('#rangeTo').val(appConfig?.range?.[1] || '');
+      }
+
+      $('#form-config').submit(function (e) {
+        e.preventDefault();
+        SaveLocalStorage('appConfig', {
+          numberLife: +$('#numberLife').val(),
+          range: [+$('#rangeFrom').val(), +$('#rangeTo').val()]
+        })
+      });
+    </script>
+  </body>
+</html>

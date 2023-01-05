@@ -25,17 +25,14 @@ var wheel_end = document.getElementById('wheel_end');
 var click_sound = document.getElementById('click_sound');
 
 // list number
-var listResult = localStorage.getItem('listResult');
-if (listResult) {
-  listResult = JSON.parse(listResult);
-} else {
-  listResult = [];
-}
-
-var appConfig = {
+var listStaff = [];
+var listResult = GetLocalStorage('listResult', []);
+var appConfig = GetLocalStorage('appConfig', {
   numberLife: 10,
   range: [1, 150],
-};
+});
+var listOfRange = [];
+console.log('ttt init', listResult, appConfig, listResult);
 var current_life = _.size(listResult) || 0;
 var is_random = false;
 var is_screen_number_lucky = true;
@@ -45,7 +42,7 @@ var stop_spin_now = false;
 var is_stop_audio = true;
 var is_muted = false;
 
-load_list_result();
+ListResult();
 UpdateAudioBtn();
 
 function UpdateAudioBtn() {
@@ -139,7 +136,7 @@ function scrollToBottom() {
   }
 }
 
-function load_list_result() {
+async function ListResult() {
   result = `<thead>
         <tr>
           <th width="10%">STT</th>
@@ -270,37 +267,35 @@ function getListNumberFromString(string) {
 }
 
 function get_random_number(range) {
+  let totalLuckyNumber = (+(range?.[1] - range?.[0]) || 0) + 1;
   let randNum = _.random(range?.[0], range?.[1]);
+
+  if (_.size(listResult) >= totalLuckyNumber) return null;
+
   while (!!_.find(listResult, (o) => IsEqualStr(o?.luckyNum, randNum))) {
     randNum = get_random_number(range);
   }
+
   return randNum;
 }
 
 function play_game() {
-  console.log('start game!', appConfig, current_life);
   play_game_effect();
   if (!is_random) {
-    if (is_screen_number_lucky) {
-      console.log('---- random ----');
-      if (current_life < appConfig?.numberLife) {
-        let random_number = get_random_number(appConfig.range);
-        if (random_number) {
-          handleAnimLuckyNumber($('.rdnCount'), 18500, random_number, 100);
-          current_life++;
-          update_info_life();
-        } else {
-          toastr.error('Đã hết số để random!');
-        }
-        return;
+    console.log('---- random ----');
+    if (current_life < appConfig?.numberLife) {
+      let random_number = get_random_number(appConfig.range);
+      if (random_number) {
+        handleAnimLuckyNumber($('.rdnCount'), 18500, random_number, 100);
+        current_life++;
+        update_info_life();
       } else {
-        toastr.error('Hết lượt quay!');
-        return;
+        toastr.error('Đã hết số để random!');
       }
+      return;
     } else {
-      // spinn
-      console.log('---- spinning ----');
-      roulette_spin();
+      toastr.error('Hết lượt quay!');
+      return;
     }
   }
 }
@@ -332,64 +327,7 @@ function writeAndSaveListResult(luckyNum) {
   localStorage.setItem('listResult', JSON.stringify(listResult));
 }
 
-// spinning wheel
-var values = [
-  '1 cái hôn',
-  '50.000vnđ',
-  'SUZUKI',
-  '100.000vnđ',
-  'FERRARI',
-  'Chúc bạn may mắn lần sau ^^',
-  'IPAD',
-  'ASUS',
-].reverse();
-
-function roulette_spin(btn) {
-  is_random = true;
-  is_stop_audio = false;
-  // set initial force randomly
-  // force = Math.floor(Math.random() * randForce) + minForce;
-  force = 8888888;
-  requestAnimationFrame(doAnimation);
-}
-
 var total = 0;
-
-function doAnimation() {
-  // new angle is previous angle + force modulo 360 (so that it stays between 0 and 360)
-  oldAngle = angle;
-  angle = (angle + force) % 360;
-  // decay force according to inertia parameter
-  force *= inertia;
-  if (stop_spin_now) {
-    stop_spin_now = false;
-    force = force < 12 ? force : 12;
-  }
-  total += Math.abs(angle - oldAngle) > 10 ? 4 : Math.abs(angle - oldAngle);
-  if (total > 5) {
-    total = 0;
-    playSound();
-  }
-  rouletteElem.style.transform = 'rotate(' + angle + 'deg)';
-  // stop animation if force is too low
-  if (force < 0.05) {
-    // score roughly estimated
-    result = values[Math.floor((angle / 360) * values.length - 0.5)];
-    // scoreElem.innerHTML = result
-    if (result) {
-      show_modal(
-        'Xin chúc mừng số may mắn <b style=color:red>' +
-          result +
-          '</b> đã trúng thưởng!',
-      );
-    } else {
-      show_modal('Không có kết quả!');
-    }
-    end_game();
-    return;
-  }
-  requestAnimationFrame(doAnimation);
-}
 
 // random number
 $('.count').each(function () {
@@ -464,40 +402,4 @@ function GetHtmlGoldText(numStr) {
     },
     '',
   );
-}
-
-function getNumPosition(num, pos) {
-  return _.split(addZeroToNumber(num, 3), '')[pos] ?? 0;
-}
-
-function addZeroToNumber(num, maxLen = 3) {
-  const countOfZero = maxLen - _.size(_.split(_.toString(num), ''));
-  return `${_.repeat('0', countOfZero)}${_.toString(num)}`;
-}
-
-function PlayAudio(audioElement) {
-  audioElement && audioElement.play();
-}
-
-function PauseAudio(audioElement) {
-  audioElement && audioElement.play();
-}
-
-function MuteAudio(audioElement) {
-  audioElement && (audioElement.muted = true);
-}
-
-function UnMuteAudio(audioElement) {
-  audioElement && (audioElement.muted = false);
-}
-
-function StopAudio(audioElement) {
-  if (audioElement) {
-    audioElement.pause();
-    audioElement.currentTime = 0;
-  }
-}
-
-function IsEqualStr(v1, v2) {
-  return !!_.toString(v1) && _.toString(v1) === _.toString(v2);
 }
