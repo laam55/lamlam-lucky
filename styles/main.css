@@ -25,23 +25,23 @@ body {
   position: absolute;
   top: 0px;
   left: 0px;
-  background-image: url("../images/frame-2.png");
+  background-image: url('../images/frame-2.png');
   /*background-size: 90% 90%;*/
   background-size: 100% 100%;
   background-repeat: no-repeat;
   background-position: center;
 }
 @font-face {
-  font-family: "digital-clock-font";
-  src: url("../digital-7/digital-7.ttf");
+  font-family: 'digital-clock-font';
+  src: url('../digital-7/digital-7.ttf');
 }
 @font-face {
-  font-family: "jersey-m54-font";
-  src: url("../jersey-m54-font/JerseyM54-aLX9.ttf");
+  font-family: 'jersey-m54-font';
+  src: url('../jersey-m54-font/JerseyM54-aLX9.ttf');
 }
 @font-face {
-  font-family: "combinumerals-font";
-  src: url("../combinumerals-font/CombinumeralsBold-Zpmm.ttf");
+  font-family: 'combinumerals-font';
+  src: url('../combinumerals-font/CombinumeralsBold-Zpmm.ttf');
 }
 img#inca {
   width: 36px;
@@ -121,7 +121,8 @@ img#inca {
   text-align: center;
   z-index: 1001;
 }
-button.button-play-1 {
+button.button-play-1,
+button.button-refresh {
   width: 40px;
   height: 40px;
   border-radius: 10px;
@@ -134,14 +135,19 @@ button.button-play-1 {
   top: 80px;
   z-index: 1010;
 }
-button.button-play-1 span {
+button.button-play-1 span,
+button.button-refresh span {
   font-size: 19pt;
   color: white;
   text-shadow: 0px 3px #a9190b;
 }
-button.button-play-1:active {
+button.button-play-1:active,
+button.button-refresh:active {
   box-shadow: 0px 3px 0px 0px #a9190b;
   transform: translate(0, 4px);
+}
+button.button-refresh {
+  right: 130px;
 }
 button.button-play {
   width: 120px;
@@ -173,7 +179,7 @@ p.info-life {
   display: inline-block;
   font-size: 12em;
   color: #808080;
-  font-family: "jersey-m54-font", "Roboto", Helvetica, Arial, sans-serif !important;
+  font-family: 'jersey-m54-font', 'Roboto', Helvetica, Arial, sans-serif !important;
   display: flex;
   margin: 10px 0px 30px 0px;
 }
@@ -216,7 +222,7 @@ p.info-life {
   animation-name: scaleEffect;
   animation-duration: 0.8s;
   -webkit-animation-iteration-count: infinite;
-          animation-iteration-count: infinite;
+  animation-iteration-count: infinite;
 }
 /* background image */
 .bgImage4 {
@@ -234,7 +240,7 @@ p.info-life {
   width: 40%;
   height: 100%;
   right: 60px;
-  background-image: url("../images/bg-image-1.png");
+  background-image: url('../images/bg-image-1.png');
   background-size: 80% 80%;
   background-repeat: no-repeat;
   background-position: center;

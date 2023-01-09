@@ -63,9 +63,9 @@ async function HandleListStaff() {
 function RenderListResult() {
   result = `<thead>
         <tr>
-          <th width="10%">STT</th>
-          <th width="45%">Số may mắn</th>
-          <th width="45%">Tên</th>
+          <th width="5%">STT</th>
+          <th width="20%">Số may mắn</th>
+          <th width="45%">Nhân sự</th>
           <th width="5%"></th>
         </tr>
       </thead>`;
@@ -76,7 +76,13 @@ function RenderListResult() {
       >
         <td>${index + 1}</td>
         <td>${item?.code ?? ''}</td>
-        <td>${item?.name ?? ''}</td>
+        <td>${
+          `${
+            item?.staffCode ? `${item?.staffCode} - ` : ''
+          }<span style="color: yellow">${item?.name}</span>${
+            item?.organizationName ? ` - ${item?.organizationName}` : ''
+          }` ?? ''
+        }</td>
         <td>
           <i class="hover-warning pointer fa fa-trash btn-delete"></i>
         </td>
