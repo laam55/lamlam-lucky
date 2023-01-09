@@ -69,6 +69,11 @@ function RenderListResult() {
           <th width="5%"></th>
         </tr>
       </thead>`;
+  result += `<tr>
+    <td colspan="4" style="text-align: right">
+      Tổng nhân sự đã checkin: ${_.size(GetFilterListStaff())}
+    </td>
+  </tr>`;
   _.forEach(GetFilterListStaff(true), (item, index) => {
     result += `<tr
         data-staffId="${item?.staffId ?? ''}"
