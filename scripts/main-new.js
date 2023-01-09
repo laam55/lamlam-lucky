@@ -25,15 +25,11 @@ var wheel_end = document.getElementById('wheel_end');
 var click_sound = document.getElementById('click_sound');
 
 // list number
-var listStaff = [];
-var listResult = GetLocalStorage('listResult', []);
+var listResult = [];
 var appConfig = GetLocalStorage('appConfig', {
   numberLife: 10,
-  range: [1, 150],
 });
-var listOfRange = [];
-console.log('ttt init', listResult, appConfig, listResult);
-var current_life = _.size(listResult) || 0;
+var current_life = 0;
 var is_random = false;
 var is_screen_number_lucky = true;
 // enter to stop
@@ -42,122 +38,188 @@ var stop_spin_now = false;
 var is_stop_audio = true;
 var is_muted = false;
 
-ListResult();
-UpdateAudioBtn();
-
-function UpdateAudioBtn() {
-  if (is_muted) {
-    MuteAudio(wheel1);
-    MuteAudio(wheel2);
-    MuteAudio(wheel3);
-    MuteAudio(wheel_end);
-    MuteAudio(click_sound);
-    MuteAudio(blackjack_audio);
-    $('.button-play-1 span').html(
-      `<i class="fa fa-volume-off" aria-hidden="true"></i>`,
-    );
-  } else {
-    UnMuteAudio(wheel1);
-    UnMuteAudio(wheel2);
-    UnMuteAudio(wheel3);
-    UnMuteAudio(wheel_end);
-    UnMuteAudio(click_sound);
-    UnMuteAudio(blackjack_audio);
-    $('.button-play-1 span').html(
-      `<i class="fa fa-volume-up" aria-hidden="true"></i>`,
-    );
-  }
-}
-
-function ToggleMute() {
-  is_muted = !is_muted;
-  UpdateAudioBtn();
-}
-
 var audio1ended = true;
 var audio2ended = true;
 var audio3ended = true;
 
-function playSound() {
-  if (!is_stop_audio) {
-    var audio = document.getElementById('wheel1_audio');
-    if (audio1ended) {
-      audio1ended = false;
-      audio.play();
-      audio.addEventListener(
-        'ended',
-        function () {
-          audio1ended = true;
-        },
-        false,
-      );
-    } else if (audio2ended) {
-      audio2ended = false;
-      var audio2 = document.getElementById('wheel2_audio');
-      audio2.play();
-      audio2.addEventListener(
-        'ended',
-        function () {
-          audio2ended = true;
-        },
-        false,
-      );
-    } else if (audio3ended) {
-      audio3ended = false;
-      var audio3 = document.getElementById('wheel3_audio');
-      audio3.play();
-      audio3.addEventListener(
-        'ended',
-        function () {
-          audio3ended = true;
-        },
-        false,
-      );
-    }
-  }
-}
+HandleListStaff();
+UpdateAudioBtn();
 playSound();
 
-function delete_result(index) {
-  var conf = confirm('Xác nhận xóa?');
-  if (conf) {
-    current_life = current_life > 0 ? current_life - 1 : 0;
-    listResult.splice(index, 1);
-    update_info_life();
-    localStorage.setItem('listResult', JSON.stringify(listResult));
-    update_inner_table();
+async function HandleListStaff() {
+  try {
+    const res = await ListStaff();
+    listResult = res?.response?.data ?? [];
+    current_life = _.size(GetFilterListStaff(true)) || 0;
+  } catch (err) {
+    listResult = [];
+    current_life = 0;
   }
+  RenderInfoLife();
+  RenderListResult();
 }
 
-function scrollToBottom() {
-  var objDiv = document.getElementById('result-div');
-  if (objDiv) {
-    objDiv.scrollTop = objDiv.scrollHeight;
-  }
-}
-
-async function ListResult() {
+// table
+function RenderListResult() {
   result = `<thead>
         <tr>
           <th width="10%">STT</th>
           <th width="45%">Số may mắn</th>
-          <th width="45%">Thời gian</th>
+          <th width="45%">Tên</th>
           <th width="5%"></th>
         </tr>
       </thead>`;
-  listResult.forEach((item, index) => {
-    result += `<tr>
-          <td>${index + 1}</td>
-          <td>${item?.luckyNum ?? ''}</td>
-          <td>${item.time}</td>
-          <td><i class="hover-warning pointer fa fa-trash" onClick="delete_result(${index})"></i></td>
-        </tr>`;
+  _.forEach(GetFilterListStaff(true), (item, index) => {
+    result += `<tr
+        data-staffId="${item?.staffId ?? ''}"
+        data-id="${item?.id ?? ''}"
+      >
+        <td>${index + 1}</td>
+        <td>${item?.code ?? ''}</td>
+        <td>${item?.name ?? ''}</td>
+        <td>
+          <i class="hover-warning pointer fa fa-trash btn-delete"></i>
+        </td>
+      </tr>`;
   });
   $('#result-table').html(result);
   scrollToBottom();
 }
-// END SCREEN
 
+$(document).on('click', '.btn-delete', function () {
+  var isConfirm = confirm('Xác nhận xóa?');
+  if (isConfirm) {
+    const id = $(this).closest('tr').attr('data-id');
+    const staffId = $(this).closest('tr').attr('data-staffId');
+    SaveLuckyStaff(staffId, false);
+    HandleListStaff();
+  }
+});
+
+$(document).keypress(function (event) {
+  event.preventDefault();
+
+  var keycode = event.keyCode ? event.keyCode : event.which;
+  if (IsEqualStr(keycode, 13) && is_random) {
+    if (is_screen_number_lucky) {
+      stop_random_now = true;
+    } else {
+      stop_spin_now = true;
+    }
+  }
+  hide_modal();
+});
+
+function RenderInfoLife() {
+  $('.info-life').html(`Lần quay ${current_life}/${appConfig?.numberLife}`);
+}
+
+function get_random_number() {
+  const listNotIsGiftResult = _.map(GetFilterListStaff(false), 'code');
+
+  if (!_.size(listNotIsGiftResult)) return null;
+
+  return GetRandomItemInArray(listNotIsGiftResult);
+}
+
+function play_game() {
+  play_game_effect();
+  if (!is_random) {
+    console.log('---- random ----', current_life, appConfig?.numberLife);
+    if (current_life < (+appConfig?.numberLife || 0)) {
+      let random_number = get_random_number();
+      if (random_number) {
+        handleAnimLuckyNumber($('.rdnCount'), 18500, random_number, 100);
+        current_life++;
+        RenderInfoLife();
+      } else {
+        toastr.error('Đã hết số để random!');
+      }
+      return;
+    } else {
+      toastr.error('Hết lượt quay!');
+      return;
+    }
+  }
+}
+
+async function HandleSaveListResult(luckyNum) {
+  console.log('--- end game! ---');
+  StopAudio(blackjack_audio);
+  is_random = false;
+  stop_random_now = false;
+  stop_spin_now = false;
+  is_stop_audio = true;
+  end_game_effect();
+  const res = await SaveLuckyStaff(GetStaffByCode(luckyNum, 'staffId'), true);
+  if (res?.code >= 400 && res?.code < 500) {
+    toastr.error('Lỗi lưu kết quả!');
+  }
+  HandleListStaff();
+}
+
+function handleAnimLuckyNumber($target, duration, num, speed = 80) {
+  var $target, started, current, text;
+  started = new Date().getTime();
+  is_random = true;
+  is_stop_audio = false;
+
+  PlayAudio(blackjack_audio);
+
+  animationTimer = setInterval(function () {
+    current = new Date().getTime();
+    playSound();
+    if (current - started >= duration || stop_random_now) {
+      stop_random_now = false;
+      clearInterval(animationTimer);
+      $target.html(GetHtmlGoldText(addZeroToNumber(num, 3)));
+      HandleSaveListResult(num);
+      show_modal(
+        'Xin chúc mừng số may mắn <b style=color:red>' +
+          num +
+          '</b> đã trúng thưởng!',
+      );
+    } else {
+      text = '';
+      for (var i = 0; i < 3; i++) {
+        if (current - started > (duration / 3) * (i + 1)) {
+          text += GetHtmlGoldText(getNumPosition(num, i));
+        } else {
+          text += GetHtmlGoldText(Math.floor(Math.random() * 10));
+        }
+      }
+      $target.html(text);
+    }
+  }, speed);
+}
+
+function GetFilterListStaff(isGift = null) {
+  return _.filter(
+    listResult,
+    (o) =>
+      _.isNull(isGift) || (isGift && !!o?.isGift) || (!isGift && !o?.isGift),
+  );
+}
+
+function GetStaffByCode(code, keyName = null) {
+  const staffData = _.find(listResult, (o) => IsEqualStr(o?.code, code));
+  if (keyName) {
+    return staffData?.[keyName];
+  }
+  return staffData;
+}
+
+function GetHtmlGoldText(numStr) {
+  return _.reduce(
+    _.split(_.toString(numStr), ''),
+    (html, item) => {
+      return `${html}<span class="gold-text">${item}</span>`;
+    },
+    '',
+  );
+}
+
+// ------------------------------------------------------
 // SHOW MODAL
 function show_modal(alert) {
   $('.app-modal-container ').show();
@@ -205,201 +267,81 @@ $(document).on('mousemove', function (event) {
   $('.follow-mouse-left').css('left', 30 - $mouseY * 0.05 + 'px');
   $('.follow-mouse-top').css('top', 30 - $mouseX * 0.05 + 'px');
 });
-$(document).keypress(function (event) {
-  event.preventDefault();
 
-  var keycode = event.keyCode ? event.keyCode : event.which;
-  if (keycode == '13' && is_random) {
-    if (is_screen_number_lucky) {
-      stop_random_now = true;
-    } else {
-      stop_spin_now = true;
-    }
-  }
-  hide_modal();
-});
+// ------------------------------------------------------
+// Audio
 
-// table
-function update_inner_table() {
-  result = `<thead>
-        <tr>
-          <th width="10%">STT</th>
-          <th width="45%">Số may mắn</th>
-          <th width="45%">Thời gian</th>
-          <th width="5%"></th>
-        </tr>
-      </thead>`;
-  listResult.forEach((item, index) => {
-    result += `<tr>
-          <td>${index + 1}</td>
-          <td>${item?.luckyNum ?? ''}</td>
-          <td>${item.time}</td>
-          <td><i class="hover-warning pointer fa fa-trash" onClick="delete_result(${index})"></i></td>
-        </tr>`;
-  });
-  $('#result-table').html(result);
-  scrollToBottom();
+function ToggleMute() {
+  is_muted = !is_muted;
+  UpdateAudioBtn();
 }
 
-update_info_life();
-function update_info_life() {
-  $('.info-life').html(`Lần quay ${current_life}/${appConfig.numberLife}`);
-}
-
-// 1-200 -> 1,2,...200
-function getListNumberFromString(string) {
-  let result = _.split(string, '-');
-  let array = [];
-  if (result.length > 1) {
-    result[0] = parseInt(result[0]);
-    result[1] = parseInt(result[1]);
-    if (result[0] < result[1]) {
-      array = _.range(result[0], result[1] + 1);
-    } else if (result[0] == result[1]) {
-      array = [result];
-    } else {
-      array = _.range(result[1], result[0] + 1);
-    }
-  } else {
-    array = [result];
-  }
-  return array;
-}
-
-function get_random_number(range) {
-  let totalLuckyNumber = (+(range?.[1] - range?.[0]) || 0) + 1;
-  let randNum = _.random(range?.[0], range?.[1]);
-
-  if (_.size(listResult) >= totalLuckyNumber) return null;
-
-  while (!!_.find(listResult, (o) => IsEqualStr(o?.luckyNum, randNum))) {
-    randNum = get_random_number(range);
-  }
-
-  return randNum;
-}
-
-function play_game() {
-  play_game_effect();
-  if (!is_random) {
-    console.log('---- random ----');
-    if (current_life < appConfig?.numberLife) {
-      let random_number = get_random_number(appConfig.range);
-      if (random_number) {
-        handleAnimLuckyNumber($('.rdnCount'), 18500, random_number, 100);
-        current_life++;
-        update_info_life();
-      } else {
-        toastr.error('Đã hết số để random!');
-      }
-      return;
-    } else {
-      toastr.error('Hết lượt quay!');
-      return;
-    }
-  }
-}
-
-function end_game($target) {
-  // hieu ung end game
-  console.log('end game!');
-  is_random = false;
-  stop_random_now = false;
-  stop_spin_now = false;
-  is_stop_audio = true;
-  end_game_effect();
-  update_inner_table();
-}
-
-function writeAndSaveListResult(luckyNum) {
-  let today = new Date();
-  var date =
-    today.getDate() + '/' + (today.getMonth() + 1) + '/' + today.getFullYear();
-  let time =
-    today.getHours() + ':' + today.getMinutes() + ':' + today.getSeconds();
-
-  resultItem = {
-    time: `${time} ${date}`,
-    luckyNum,
-    gameType: 1,
-  };
-  listResult.push(resultItem);
-  localStorage.setItem('listResult', JSON.stringify(listResult));
-}
-
-var total = 0;
-
-// random number
-$('.count').each(function () {
-  $(this)
-    .prop('Counter', 0)
-    .animate(
-      {
-        Counter: $(this).text(),
-      },
-      {
-        duration: 4000,
-        easing: $(this).data('esing'),
-        step: function (now) {
-          $(this).text(Math.ceil(now));
-        },
-      },
+function UpdateAudioBtn() {
+  if (is_muted) {
+    MuteAudio(wheel1);
+    MuteAudio(wheel2);
+    MuteAudio(wheel3);
+    MuteAudio(wheel_end);
+    MuteAudio(click_sound);
+    MuteAudio(blackjack_audio);
+    $('.button-play-1 span').html(
+      `<i class="fa fa-volume-off" aria-hidden="true"></i>`,
     );
-});
-
-function handleAnimLuckyNumber(
-  $target,
-  duration,
-  num,
-  speed = 80,
-  isTest = false,
-) {
-  var $target, started, current, text, len;
-  num = num || $target.data('count');
-  len = (num + '').length;
-  started = new Date().getTime();
-  is_random = true;
-  is_stop_audio = false;
-
-  PlayAudio(blackjack_audio);
-
-  animationTimer = setInterval(function () {
-    current = new Date().getTime();
-    playSound();
-    if (current - started >= duration || stop_random_now) {
-      stop_random_now = false;
-      clearInterval(animationTimer);
-      $target.html(GetHtmlGoldText(addZeroToNumber(num, 3)));
-      if (!isTest) {
-        StopAudio(blackjack_audio);
-        writeAndSaveListResult(num);
-        show_modal(
-          'Xin chúc mừng số may mắn <b style=color:red>' +
-            num +
-            '</b> đã trúng thưởng!',
-        );
-      }
-      end_game($target);
-    } else {
-      text = '';
-      for (var i = 0; i < 3; i++) {
-        if (current - started > (duration / 3) * (i + 1)) {
-          text += GetHtmlGoldText(getNumPosition(num, i));
-        } else {
-          text += GetHtmlGoldText(Math.floor(Math.random() * 10));
-        }
-      }
-      $target.html(text);
-    }
-  }, speed);
+  } else {
+    UnMuteAudio(wheel1);
+    UnMuteAudio(wheel2);
+    UnMuteAudio(wheel3);
+    UnMuteAudio(wheel_end);
+    UnMuteAudio(click_sound);
+    UnMuteAudio(blackjack_audio);
+    $('.button-play-1 span').html(
+      `<i class="fa fa-volume-up" aria-hidden="true"></i>`,
+    );
+  }
 }
 
-function GetHtmlGoldText(numStr) {
-  return _.reduce(
-    _.split(_.toString(numStr), ''),
-    (html, item) => {
-      return `${html}<span class="gold-text">${item}</span>`;
-    },
-    '',
-  );
+function playSound() {
+  if (!is_stop_audio) {
+    var audio = document.getElementById('wheel1_audio');
+    if (audio1ended) {
+      audio1ended = false;
+      audio.play();
+      audio.addEventListener(
+        'ended',
+        function () {
+          audio1ended = true;
+        },
+        false,
+      );
+    } else if (audio2ended) {
+      audio2ended = false;
+      var audio2 = document.getElementById('wheel2_audio');
+      audio2.play();
+      audio2.addEventListener(
+        'ended',
+        function () {
+          audio2ended = true;
+        },
+        false,
+      );
+    } else if (audio3ended) {
+      audio3ended = false;
+      var audio3 = document.getElementById('wheel3_audio');
+      audio3.play();
+      audio3.addEventListener(
+        'ended',
+        function () {
+          audio3ended = true;
+        },
+        false,
+      );
+    }
+  }
+}
+
+function scrollToBottom() {
+  var objDiv = document.getElementById('result-div');
+  if (objDiv) {
+    objDiv.scrollTop = objDiv.scrollHeight;
+  }
 }

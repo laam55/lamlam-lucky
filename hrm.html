@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="icon" type="image/x-icon" href="images/logo.ico" />
+    <style>
+      html, body {
+        margin: 0;
+        padding: 0;
+      }
+      iframe {
+        width: 100vw;
+        height: 100vh;
+        border: none;
+      }
+    </style>
+  </head>
+  <body>
+    <iframe src="index.html?=1"></iframe>
+    <script src="libs/jquery.min.js"></script>
+    <script src="libs/toastr.min.js"></script>
+    <script src="scripts/helper.js"></script>
+    <script>
+      SaveLocalStorage('hrm_token', 123456);
+    </script>
+  </body>
+</html>

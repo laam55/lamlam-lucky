@@ -30,8 +30,27 @@ function StopAudio(audioElement) {
   }
 }
 
+function GetQueryStringVar(variable) {
+  var query = window.location.search.substring(1);
+  var vars = _.split(query, '&');
+  for (var i = 0; i < _.size(vars); i++) {
+    var pair = _.split(vars[i], '=');
+    if (decodeURIComponent(pair[0]) == variable) {
+      return _.trim(decodeURIComponent(pair[1]));
+    }
+  }
+}
+
+function GetRandomItemInArray(array = []) {
+  return array?.[Math.floor(Math.random() * _.size(array))] ?? null;
+}
+
 function IsEqualStr(v1, v2) {
   return !!_.toString(v1) && _.toString(v1) === _.toString(v2);
+}
+
+function IncludesId(array, id) {
+  return !!size(_.filter(array, (o) => IsEqualStr(o, id)));
 }
 
 function GetLocalStorage(keyName, defaultVal = null) {

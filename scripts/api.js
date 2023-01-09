@@ -1,36 +1,35 @@
-const TOKEN =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbmVycCIsImp0aSI6ImI3NzRkMTdhLTRhYTYtNGM5Mi1hY2M5LWZmOWFjMGQwN2FiOCIsImVtYWlsIjoiICIsImZhbWlseV9uYW1lIjoiTm92YW9uMDUzMCIsIm5hbWUiOiJBZG1pbnN0cmF0b3IxIiwiZm0iOiIyIiwic3lzdGVtIjoiTm92YW9uMDUzMCIsInVpZCI6IjEiLCJyb2xlcyI6IjgiLCJleHAiOjE3MDQ0MjIzMzQsImlzcyI6IlNlY3VyZUFwaSIsImF1ZCI6IlNlY3VyZUFwaVVzZXIifQ.y5pUHGO0ej7aMsBQ_tUbVDK1jodp8Kh73wG9mVCs038';
-const EVENT_ID = 28;
-const BASE_URL = `http://192.168.30.194:8088`;
+const access_token = GetQueryStringVar('token') || GetLocalStorage('token');
+const baseUrl = GetQueryStringVar('baseUrl') || GetLocalStorage('baseUrl');
+const eventId = GetQueryStringVar('eventId') || GetLocalStorage('eventId');
+
+console.log('ttt -- access_token', access_token);
+console.log('ttt -- baseUrl', baseUrl);
+console.log('ttt -- eventId', eventId);
 
 async function ListStaff() {
-  accessToken = localStorage.getItem('token') || TOKEN;
-
   return $.ajax({
     async: true,
     crossDomain: true,
-    url: `${BASE_URL}/api/event/geteventstaffbyeventid?eventId=${EVENT_ID}`,
+    url: `${baseUrl}/api/event/geteventstaffbyeventid?eventId=${eventId}`,
     method: 'GET',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
-      Authorization: `Bearer ${accessToken}`,
+      Authorization: `Bearer ${access_token}`,
     },
   }).done(function (response) {
     return response;
   });
 }
 
-async function SaveLuckyStaff(staffId) {
-  accessToken = localStorage.getItem('token') || TOKEN;
-
+async function SaveLuckyStaff(staffId, isGift = true) {
   return $.ajax({
     async: true,
     crossDomain: true,
-    url: `${BASE_URL}/api/event/eventstaffsavegift?eventId=${EVENT_ID}&staffId=${staffId}&isGift=true`,
+    url: `${baseUrl}/api/event/eventstaffsavegift?eventId=${eventId}&staffId=${staffId}&isGift=${isGift}`,
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
-      Authorization: `Bearer ${accessToken}`,
+      Authorization: `Bearer ${access_token}`,
     },
   }).done(function (response) {
     return response;

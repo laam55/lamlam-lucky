@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Cấu hình</title>
+    <link rel="icon" type="image/x-icon" href="images/logo.ico" />
+    <link rel="stylesheet" href="styles/main.css" />
+  </head>
+  <body>
+    <form id="form-config">
+      <h3>Cấu hình</h3>
+      <input id="token" type="text" placeholder="Token" required>
+      <br>
+      <br>
+      <input id="baseUrl" type="text" placeholder="Base URL" required>
+      <br>
+      <br>
+      <input id="eventId" type="text" placeholder="Event Id" required>
+      <br>
+      <br>
+      <input id="numberLife" type="text" placeholder="Number life" required>
+      <br>
+      <br>
+      <input id="btnSave" type="submit" value="Lưu">
+    </form>
+    <script src="libs/jquery.min.js"></script>
+    <script src="libs/toastr.min.js"></script>
+    <script src="scripts/helper.js"></script>
+    <script>
+      Init();
+      function Init() {
+        let token = GetLocalStorage('token', null);
+        let baseUrl = GetLocalStorage('baseUrl', null);
+        let eventId = GetLocalStorage('eventId', null);
+        let appConfig = GetLocalStorage('appConfig', null);
+        $('#token').val(token || '');
+        $('#baseUrl').val(baseUrl || '');
+        $('#eventId').val(eventId || '');
+        $('#numberLife').val(appConfig?.numberLife || '');
+      }
+
+      $('#form-config').submit(function (e) {
+        e.preventDefault();
+        SaveLocalStorage('token', $('#token').val() || '');
+        SaveLocalStorage('baseUrl', $('#baseUrl').val() || '');
+        SaveLocalStorage('eventId', $('#eventId').val() || '');
+        SaveLocalStorage('appConfig', {
+          numberLife: $('#numberLife').val() || ''
+        });
+      });
+    </script>
+  </body>
+</html>
