@@ -4,7 +4,9 @@ body {
   margin: 0;
   height: 100vh;
   overflow: hidden;
-  background-color: pink;
+  background-image: url('../images/novaon_bg.png');
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
 }
 .pointer {
   cursor: pointer;
@@ -65,20 +67,23 @@ img#inca {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  background-image: url(../images/novaon_frame.png);
+  background-size: contain;
+  background-size: 85% 85%;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 .wrap-game p.title {
   width: 100%;
   padding: 0px 150px;
-  color: yellow;
+  color: #1B71FA;
   text-align: center;
   font-weight: bold;
   font-size: 27px;
-  text-shadow: 2px 2px 0 rgb(119 108 28);
   margin: 0px;
 }
 .novaon-logo {
-  width: 10vh;
-  height: 10vh;
+  height: 15vh;
   margin-bottom: 8px;
 }
 .not-allowed {
@@ -132,7 +137,7 @@ button.button-refresh {
   outline-style: none;
   position: absolute;
   right: 80px;
-  top: 80px;
+  top: 120px;
   z-index: 1010;
 }
 button.button-play-1 span,
@@ -173,6 +178,7 @@ p.info-life {
   text-align: center;
   margin-top: 12px;
   font-weight: 600;
+  color: white;
 }
 .count,
 .rdnCount {
@@ -237,11 +243,11 @@ p.info-life {
   transform: rotateY(180deg);
 }
 .bgImage1 {
-  width: 40%;
+  width: 35%;
   height: 100%;
   right: 60px;
   background-image: url('../images/bg-image-1.png');
-  background-size: 80% 80%;
+  background-size: 90% 90%;
   background-repeat: no-repeat;
   background-position: center;
   z-index: 1111;
@@ -252,7 +258,7 @@ p.info-life {
 }
 .bgImage1 p {
   position: absolute;
-  top: 18%;
+  top: 10%;
   width: 100%;
   color: yellow;
   font-weight: bold;
@@ -308,11 +314,11 @@ p.info-life {
 .result-div {
   color: white;
   width: 100%;
-  max-height: 50%;
-  width: 50%;
+  max-height: 70%;
+  width: 74%;
   position: absolute;
-  left: 25%;
-  top: 25%;
+  left: 15%;
+  top: 15%;
   border: none;
   overflow-y: scroll;
 }
