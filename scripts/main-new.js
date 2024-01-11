@@ -130,6 +130,9 @@ function get_random_number() {
 
   if (!_.size(listNotIsGiftResult)) return null;
 
+  GetRandomItemInArray(listNotIsGiftResult);
+  GetRandomItemInArray(listNotIsGiftResult);
+  GetRandomItemInArray(listNotIsGiftResult);
   return GetRandomItemInArray(listNotIsGiftResult);
 }
 
@@ -140,7 +143,7 @@ function play_game() {
     if (current_life < (+appConfig?.numberLife || 0)) {
       let random_number = get_random_number();
       if (random_number) {
-        handleAnimLuckyNumber($('.rdnCount'), 18500, random_number, 100);
+        handleAnimLuckyNumber($('.rdnCount'), 14000, random_number, 100);
         current_life++;
         RenderInfoLife();
       } else {
