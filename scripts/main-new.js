@@ -27,7 +27,7 @@ var click_sound = document.getElementById('click_sound');
 // list number
 var listResult = [];
 var appConfig = GetLocalStorage('appConfig', {
-  numberLife: 10,
+  numberLife: 7,
 });
 var current_life = 0;
 var is_random = false;
